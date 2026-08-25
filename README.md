@@ -23,9 +23,9 @@
 
 The Swarm IDE consists of three isolated layers that work in tandem to keep your code functioning without manual intervention:
 
-1. **The Orchestrator:** Powered by \deepseek-r1:7b\. It receives your prompt and determines whether to write files, execute bash scripts, or query the RAG database.
-2. **The Micro-Swarm (CRAG):** When the Orchestrator executes a script in the local sandbox and it crashes, the Micro-Swarm intervenes. It skips simple retries and instead parses the full stack trace. A specialized Coder agent (\qwen2.5-coder:7b\) applies the exact patch needed to fix the syntax or logic error.
-3. **The Memory Module:** When the Micro-Swarm successfully heals a bug, it embeds the \(Crash Log + Root Cause + Patch)\ into a persistent local **ChromaDB** vector database. If the Swarm encounters this error again, it instantly retrieves the memory and solves it on the first attempt.
+1. **The Orchestrator:** Powered by `deepseek-r1:7b`. It receives your prompt and determines whether to write files, execute bash scripts, or query the RAG database.
+2. **The Micro-Swarm (CRAG):** When the Orchestrator executes a script in the local sandbox and it crashes, the Micro-Swarm intervenes. It skips simple retries and instead parses the full stack trace. A specialized Coder agent (`qwen2.5-coder:7b`) applies the exact patch needed to fix the syntax or logic error.
+3. **The Memory Module:** When the Micro-Swarm successfully heals a bug, it embeds the `(Crash Log + Root Cause + Patch)` into a persistent local **ChromaDB** vector database. If the Swarm encounters this error again, it instantly retrieves the memory and solves it on the first attempt.
 
 ## 🚀 Quick Start
 
@@ -34,21 +34,23 @@ You need Python 3.10+ and [Ollama](https://ollama.com) installed on your machine
 ### 1. Grab the Weights
 Run the included script to pull the specific local models the swarm relies on:
 
-\\ash
+```bash
 # Windows
 pull_models.bat
 
 # Mac / Linux
 sh pull_models.sh
-\
+```
+
 ### 2. Boot the Environment
 Install the lightweight dependencies and start the local Flask server.
 
-\\ash
+```bash
 pip install flask chromadb requests
 python 6_builder_app.py
-\
-> **Note:** The UI runs on port 5000. Access your terminal at \http://localhost:5000\. No telemetry is transmitted off your machine.
+```
+
+> **Note:** The UI runs on port 5000. Access your terminal at `http://localhost:5000`. No telemetry is transmitted off your machine.
 
 ---
 
