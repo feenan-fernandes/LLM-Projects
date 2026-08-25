@@ -1,0 +1,13 @@
+
+__pycache__/
+*.pyc
+.venv/
+venv/
+chroma_db/
+scratch/
+workspace/
+*.pkl
+*.db
+*.exe
+*.exe.config
+

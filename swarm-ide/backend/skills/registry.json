@@ -1,0 +1,10 @@
+{
+  "stripe--stripe-webhook-skill": {
+    "name": "stripe-webhook-skill",
+    "full_name": "stripe/stripe-webhook-skill",
+    "url": "https://github.com/stripe/stripe-webhook-skill",
+    "stars": 312,
+    "score": 42.5,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\agents\\..\\skills\\stripe--stripe-webhook-skill\\SKILL.md"
+  }
+}
