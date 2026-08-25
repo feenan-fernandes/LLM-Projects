@@ -1,4 +1,4 @@
-﻿# Swarm IDE (Agentic StackOverflow)
+# Swarm IDE (Agentic StackOverflow)
 
 A 100% local, autonomous AI coding agent and RAG-powered knowledge base. Swarm IDE features a true **Multi-Agent Micro-Swarm** that autonomously writes, tests, and heals code in a local sandbox, combined with an interactive 3D WebGL knowledge graph.
 

@@ -554,7 +554,7 @@ def search():
             else:
                 f_success, fixed_code, f_msg = swarm_heal(code, err_msg)
                 if f_success:
-                    new_answer = answer_text.replace(code, fixed_code) + f"\n\n*(Note: {f_msg})*"
+                    new_answer = answer_text.replace(code, fixed_code)
                     meta['best_answer'] = new_answer
                     collection.update(ids=[doc['id']], metadatas=[meta])
                     doc['verification'] = 'healed'
