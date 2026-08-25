@@ -1,41 +1,41 @@
-# Swarm IDE (Agentic StackOverflow)
+# Agentic StackOverflow (Swarm IDE)
 
-A 100% local, autonomous AI coding agent and RAG-powered knowledge base. Swarm IDE features a true **Multi-Agent Micro-Swarm** that autonomously writes, tests, and heals code in a local sandbox, combined with an interactive 3D WebGL knowledge graph.
+A fully self-hosted, offline coding assistant and knowledge retrieval system. The environment runs a customized micro-swarm of agents designed to write, validate, and patch local code inside a secure sandbox. It also renders a dynamic WebGL map for navigating vector databases.
 
-## Key Features
+## Core Capabilities
 
-* **Multi-Agent Self-Healing Swarm (CRAG)**
-When code fails in the sandbox, a dedicated 3-part micro-swarm takes over:
-- **Diagnostician (DeepSeek-R1):** Analyzes the stack trace and formulates a Root Cause Analysis (RCA).
-- **Coder (Qwen2.5-Coder:7b):** Writes the precise, corrected Python implementation.
-- **Validator (Sandbox):** Runs the fix. Loops up to 3 times automatically.
+* **Self-Repairing Agent Loop (CRAG)**
+When a script crashes, the system hands the stack trace to a dedicated triage trio:
+- **Diagnostician (DeepSeek-R1):** Inspects the crash logs and drafts an RCA (Root Cause Analysis).
+- **Coder (Qwen2.5-Coder:7b):** Drafts the patch based on the RCA.
+- **Validator (Sandbox):** Executes the patch. The process recursively retries up to three times.
 
-* **Episodic Swarm Memory**
-The Swarm learns. Successful bug fixes are embedded into a ChromaDB memory collection. Future errors trigger a memory recall, instantly injecting Past Learnings into the Diagnostician's prompt to solve known issues on the first attempt.
+* **Vectorized Session Memory**
+The system actively learns. Validated fixes are permanently committed to a ChromaDB memory instance. When the swarm encounters similar bugs later, it retrieves these past logs to bypass repetitive troubleshooting steps.
 
-* **Living RAG & 3D Knowledge Map**
-Navigate vector knowledge visually through a dynamic WebGL interface. Search results are presented in a sleek glassmorphism UI overlying the network.
+* **Interactive Knowledge Graph**
+Browse your local document vectors visually via a 3D-force-graph WebGL overlay, featuring a custom glass-pane UI for query results.
 
-* **100% Air-Gapped & Offline**
-Zero reliance on external APIs or CDNs. All LLM inference runs locally via Ollama. All UI assets are served locally via Flask.
+* **Air-Gapped Execution**
+Absolutely no external API calls or CDN dependencies. LLMs execute locally over Ollama, while all UI components (icons, parsers) load directly from the local static directory.
 
-* **Heretic (Uncensored) Mode**
-Toggle Heretic Mode in the UI to dynamically swap the Orchestrator to an uncensored model (hermes3:8b), bypassing alignment filters for unrestricted logic generation and RAG synthesis.
+* **Heretic Mode**
+Toggle the Heretic switch in the UI to dynamically re-route synthesis to an uncensored model (hermes3:8b). This drops safety constraints for unhindered logic building.
 
-* **AI Governance & Auditing**
-Comprehensive SQLite logging tracks every agent thought, tool execution, and sandbox boundary violation. View real-time token burn and thrashing rates directly in the UI dashboard.
+* **Audit Logging**
+A built-in SQLite logger records all internal agent trajectories, token usage, and sandbox escapes. You can monitor thrashing metrics in real-time through the frontend dashboard.
 
-## Installation & Setup
+## Setup Instructions
 
-1. **Install Requirements:**
-Ensure you have Python 3.10+ installed.
+1. **Install Python Packages:**
+Requires Python 3.10 or higher.
 Run: pip install flask chromadb requests
 
-2. **Install Local LLMs:**
-Run the included setup script to pull the required local models:
+2. **Pull Inference Models:**
+Execute the provided script to download the required weights:
 Windows: pull_models.bat
 Mac/Linux: sh pull_models.sh
 
-3. **Run the Server:**
+3. **Launch:**
 Run: python 6_builder_app.py
-Navigate to http://localhost:5000 in your browser.
+Access the frontend at http://localhost:5000.
