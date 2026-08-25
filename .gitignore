@@ -6,7 +6,7 @@ venv/
 chroma_db/
 scratch/
 workspace/
-*.pkl
+bm25*.pkl
 *.db
 *.exe
 *.exe.config

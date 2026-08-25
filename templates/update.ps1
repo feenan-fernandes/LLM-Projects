@@ -1,1 +1,0 @@
-(Get-Content templates/index.html) -replace 'appendResultToPanel\(match.title, match.score, match.answer\);', 'appendResultToPanel(match.title, match.score, match.answer, match.verification, match.verification_msg);' | Set-Content templates/index.html
