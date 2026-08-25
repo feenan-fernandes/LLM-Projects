@@ -1,47 +1,54 @@
-# Digital Wedding Invitation
+# Swarm IDE (Agentic StackOverflow)
 
-A premium, production-ready React web application for a digital wedding invitation. Built with Vite, React, and Tailwind CSS.
+A 100% local, autonomous AI coding agent and RAG-powered knowledge base. Swarm IDE features a true **Multi-Agent Micro-Swarm** that autonomously writes, tests, and heals code in a local sandbox, combined with an interactive 3D WebGL knowledge graph.
 
-## Features
-- **Modern Tech Stack**: React 18, Vite for lightning-fast builds, and Tailwind CSS for styling.
-- **Luxury Aesthetic**: High-end editorial design with a warm ivory and muted sage palette, gold foil accents, and elegant typography (`Cormorant Garamond` and `Great Vibes`).
-- **Smooth Animations**: Intersectional Observer hooks drive buttery smooth fade-in animations as the user scrolls.
-- **Mobile-First Frame**: Designed specifically for a 9:16 mobile aspect ratio, with a gorgeous glassmorphic desktop frame.
+## 🚀 Key Features
 
-## Local Development
+- **Multi-Agent Self-Healing Swarm (CRAG)** 
+  When code fails in the sandbox, a dedicated 3-part micro-swarm takes over:
+  - **Diagnostician (DeepSeek-R1):** Analyzes the stack trace and formulates a Root Cause Analysis (RCA).
+  - **Coder (Qwen2.5-Coder:7b):** Writes the precise, corrected Python implementation.
+  - **Validator (Sandbox):** Runs the fix. Loops up to 3 times automatically.
 
-To run this project locally, you must have [Node.js](https://nodejs.org/) installed on your machine.
+- **Episodic Swarm Memory**
+  The Swarm *learns*. Successful bug fixes are embedded into a ChromaDB \swarm_healing_memory\ collection. Future errors trigger a memory recall, instantly injecting *Past Learnings* into the Diagnostician's prompt to solve known issues on the first attempt.
 
-1. **Install dependencies**:
-   ```bash
-   npm install
-   ```
+- **Living RAG & 3D Knowledge Map**
+  Navigate vector knowledge visually through a dynamic d-force-graph\ WebGL interface. Search results are presented in a sleek glassmorphism UI overlying the network.
 
-2. **Start the development server**:
-   ```bash
-   npm run dev
-   ```
-   The site will be available at `http://localhost:5173`.
+- **100% Air-Gapped & Offline**
+  Zero reliance on external APIs or CDNs. All LLM inference runs locally via **Ollama**. All UI assets (fonts, icons, markdown parsers) are served locally via Flask.
 
-3. **Build for production**:
-   ```bash
-   npm run build
-   ```
-   This will generate a `dist` directory with static assets.
+- **Heretic (Uncensored) Mode**
+  Toggle Heretic Mode in the UI to dynamically swap the Orchestrator to an uncensored model (\hermes3:8b\), bypassing alignment filters for unrestricted logic generation and RAG synthesis.
 
-## Deployment
+- **AI Governance & Auditing**
+  Comprehensive SQLite logging (\governance_logs.db\) tracks every agent thought, tool execution, and sandbox boundary violation. View real-time token burn and thrashing rates directly in the UI dashboard.
 
-This app is a static site and can be deployed easily for free.
+## 🛠️ Installation & Setup
 
-### Netlify
-This project includes a `netlify.toml` file.
-1. Create a Netlify account and link your GitHub repository, or simply drag and drop the `dist/` folder into Netlify Drop.
-2. Build command: `npm run build`
-3. Publish directory: `dist`
+1. **Install Requirements:**
+   Ensure you have Python 3.10+ installed.
+   \\ash
+   pip install flask chromadb requests
+   \
+2. **Install Local LLMs (via Ollama):**
+   The Swarm relies on specific models to function properly.
+   \\ash
+   ollama pull deepseek-r1:7b     # Diagnostician / Default Orchestrator
+   ollama pull deepseek-r1:1.5b   # Librarian (RAG evaluator)
+   ollama pull qwen2.5-coder:7b   # Coder
+   ollama pull hermes3:8b         # Heretic Mode Orchestrator
+   ollama pull nomic-embed-text   # Local Embedding Function
+   \
+3. **Run the Server:**
+   \\ash
+   python 6_builder_app.py
+   \   Navigate to \http://localhost:5000\ in your browser.
 
-### Firebase Hosting
-This project includes a `firebase.json` file.
-1. Install the Firebase CLI: `npm install -g firebase-tools`
-2. Login: `firebase login`
-3. Initialize (if needed): `firebase init hosting`
-4. Deploy: `firebase deploy`
+## 🧠 Architecture Highlights
+- **Unverifiable Code Bypass:** The Diagnostician is trained to recognize heavy framework-dependent code (e.g., PySpark) and tags it as \[UNVERIFIABLE]\. The Coder will blindly fix the syntax without triggering infinite, doomed sandbox execution loops.
+- **Streaming Pipeline:** Fully asynchronous Server-Sent Events (SSE) stream the AI's internal \<think>\ process directly to the frontend.
+
+## 📄 License
+MIT License
