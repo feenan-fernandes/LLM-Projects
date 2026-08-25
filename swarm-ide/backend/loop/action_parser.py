@@ -62,6 +62,30 @@ def parse_action(xml_text):
             "diff": _extract(xml_text, "diff") or "",
         }}
 
+    if "<create_skill" in xml_text:
+        name = _extract(xml_text, "name") or _extract_attr(xml_text, "create_skill", "name") or ""
+        code = _extract(xml_text, "code") or _extract_attr(xml_text, "create_skill", "code") or ""
+        if not code:
+            m = re.search(r'<create_skill[^>]*>(.*?)</create_skill>', xml_text, re.DOTALL)
+            if m and not "<name>" in m.group(1):
+                code = m.group(1).strip()
+        return {"type": "create_skill", "args": {
+            "name": name,
+            "code": code,
+        }}
+
+    if "<use_skill" in xml_text:
+        name = _extract(xml_text, "name") or _extract_attr(xml_text, "use_skill", "name") or ""
+        args = _extract(xml_text, "args") or _extract_attr(xml_text, "use_skill", "args") or ""
+        if not args:
+            m = re.search(r'<use_skill[^>]*>(.*?)</use_skill>', xml_text, re.DOTALL)
+            if m and not "<name>" in m.group(1):
+                args = m.group(1).strip()
+        return {"type": "use_skill", "args": {
+            "name": name,
+            "args": args,
+        }}
+
     if "<write_file" in xml_text:
         path = _extract(xml_text, "path") or _extract_attr(xml_text, "write_file", "path") or ""
         content = _extract(xml_text, "content") or _extract_attr(xml_text, "write_file", "content") or ""

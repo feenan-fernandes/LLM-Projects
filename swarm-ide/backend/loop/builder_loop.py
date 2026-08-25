@@ -220,6 +220,33 @@ def run_builder_loop(
                         f.write(content)
                     observation = f"File written: {path}"
 
+            elif action_type == "create_skill":
+                name = args.get("name", "")
+                code = args.get("code", "")
+                if not name.endswith(".py"): name += ".py"
+                workspace_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'workspace'))
+                skills_dir = os.path.join(workspace_dir, "skills")
+                os.makedirs(skills_dir, exist_ok=True)
+                
+                full_path = os.path.join(skills_dir, os.path.basename(name))
+                with open(full_path, "w", encoding="utf-8") as f:
+                    f.write(code)
+                observation = f"Skill created and persisted permanently at workspace/skills/{os.path.basename(name)}"
+
+            elif action_type == "use_skill":
+                name = args.get("name", "")
+                skill_args = args.get("args", "")
+                if not name.endswith(".py"): name += ".py"
+                workspace_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'workspace'))
+                full_path = os.path.join(workspace_dir, "skills", os.path.basename(name))
+                
+                if not os.path.exists(full_path):
+                    observation = f"Skill '{name}' does not exist in workspace/skills/. You must <create_skill> first."
+                else:
+                    cmd = f'python "{full_path}" {skill_args}'
+                    res = execute_command_safely(cmd, task_id=task_id, iteration=iteration)
+                    observation = f"Skill Execution STDOUT:\n{res['stdout']}\nSTDERR:\n{res['stderr']}\nExit: {res['code']}"
+
             # 7. EXECUTE BASH
             elif action_type == "execute_bash":
                 cmd = args.get("command", "")

@@ -165,9 +165,13 @@ def execute_builder_loop(prompt, uncensored=False, history=None):
             context_tree += f"USER: {turn.get('user', '')}\nSWARM: {turn.get('assistant', '')}\n\n"
         context_tree += "</previous_conversation_memory>\n\n"
 
-    system_prompt = f"""You are an Autonomous Software Engineer with hands. You have full access to a local filesystem at {WORKSPACE}.
-Your job is to build exactly what the user asks for.
+    workspace_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'workspace'))
+    skills_dir = os.path.join(workspace_dir, "skills")
+    os.makedirs(skills_dir, exist_ok=True)
+    available_skills = [f for f in os.listdir(skills_dir) if f.endswith(".py")]
+    skills_str = "\n".join([f" - {s}" for s in available_skills]) if available_skills else " - No skills created yet."
 
+    system_prompt = f"""You are the Swarm Orchestrator. You operate in a continuous loop: Thought -> Action -> Observation.
 {context_tree}YOU MUST USE THESE EXACT XML TAGS TO TAKE ACTIONS. DO NOT USE MARKDOWN CODE BLOCKS FOR ACTIONS.
 
 To write a file, output:
@@ -180,6 +184,21 @@ To run a terminal command, output:
 <execute_bash>
 <cmd>python filename.py</cmd>
 </execute_bash>
+
+To permanently CREATE a reusable python tool/skill for your swarm, output:
+<create_skill>
+<name>scraper.py</name>
+<code>import requests...</code>
+</create_skill>
+
+To USE an existing python tool/skill, output:
+<use_skill>
+<name>scraper.py</name>
+<args>https://example.com</args>
+</use_skill>
+
+AVAILABLE SKILLS IN YOUR TOOLKIT:
+{skills_str}
 
 To finish the task or simply answer a question, output:
 <finish>Your summary or conversational reply here</finish>
