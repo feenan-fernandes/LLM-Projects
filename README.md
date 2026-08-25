@@ -1,41 +1,44 @@
-# Agentic StackOverflow (Swarm IDE)
+﻿<p align="center">
+  <img src="https://img.shields.io/badge/Local-100%25_Offline-000000?style=for-the-badge&logo=git" alt="Offline">
+  <img src="https://img.shields.io/badge/Ollama-Required-blue?style=for-the-badge&logo=ollama" alt="Ollama">
+  <img src="https://img.shields.io/badge/Python-3.10+-yellow?style=for-the-badge&logo=python" alt="Python">
+</p>
 
-A fully self-hosted, offline coding assistant and knowledge retrieval system. The environment runs a customized micro-swarm of agents designed to write, validate, and patch local code inside a secure sandbox. It also renders a dynamic WebGL map for navigating vector databases.
+# Swarm IDE 🐝
 
-## Core Capabilities
+**An absolutely air-gapped, auto-healing developer environment.** Swarm IDE ditches cloud APIs entirely, running a customized micro-swarm of local agents over Ollama. When your code crashes, the swarm reads the stack trace, diagnoses the root cause, writes a patch, and validates it inside a local sandbox—all without human intervention.
 
-* **Self-Repairing Agent Loop (CRAG)**
-When a script crashes, the system hands the stack trace to a dedicated triage trio:
-- **Diagnostician (DeepSeek-R1):** Inspects the crash logs and drafts an RCA (Root Cause Analysis).
-- **Coder (Qwen2.5-Coder:7b):** Drafts the patch based on the RCA.
-- **Validator (Sandbox):** Executes the patch. The process recursively retries up to three times.
+<table>
+<tr><td><b>Self-Healing CRAG Loop</b></td><td>A dedicated triage trio takes over when tests fail. DeepSeek-R1 drafts an RCA, Qwen2.5-Coder writes the patch, and the sandbox validates it. Retries recursively.</td></tr>
+<tr><td><b>Autonomous Skill Creation</b></td><td>The swarm writes its own tools. Complex pipelines are saved as executable Python scripts in your workspace and dynamically loaded into the agent's context during future sessions.</td></tr>
+<tr><td><b>Vectorized Memory</b></td><td>Successful bug fixes are committed permanently to a ChromaDB instance. The swarm instantly recalls these exact stack traces later, bypassing repetitive debugging.</td></tr>
+<tr><td><b>Interactive 3D Graph</b></td><td>Browse your repository and vector databases visually via a gorgeous WebGL overlay, featuring a glass-pane UI for query results.</td></tr>
+<tr><td><b>Heretic Mode</b></td><td>Drop the safety rails. A single toggle routes synthesis to an uncensored model (Hermes 3), completely disabling governance tracking and moralizing filters for unrestricted logic building.</td></tr>
+</table>
 
-* **Vectorized Session Memory**
-The system actively learns. Validated fixes are permanently committed to a ChromaDB memory instance. When the swarm encounters similar bugs later, it retrieves these past logs to bypass repetitive troubleshooting steps.
+---
 
-* **Interactive Knowledge Graph**
-Browse your local document vectors visually via a 3D-force-graph WebGL overlay, featuring a custom glass-pane UI for query results.
+## Quick Start
 
-* **Air-Gapped Execution**
-Absolutely no external API calls or CDN dependencies. LLMs execute locally over Ollama, while all UI components (icons, parsers) load directly from the local static directory.
+You need Python 3.10+ and [Ollama](https://ollama.com) installed on your machine. 
 
-* **Heretic Mode**
-Toggle the Heretic switch in the UI to dynamically re-route synthesis to an uncensored model (hermes3:8b). This drops safety constraints for unhindered logic building.
+### 1. Grab the Weights
+Run the included batch/shell script to pull the specific local models the swarm relies on:
 
-* **Audit Logging**
-A built-in SQLite logger records all internal agent trajectories, token usage, and sandbox escapes. You can monitor thrashing metrics in real-time through the frontend dashboard.
+`ash
+# Windows
+pull_models.bat
 
-## Setup Instructions
+# Mac / Linux
+sh pull_models.sh
+`
 
-1. **Install Python Packages:**
-Requires Python 3.10 or higher.
-Run: pip install flask chromadb requests
+### 2. Boot the Environment
+Install the lightweight dependencies and start the local Flask server.
 
-2. **Pull Inference Models:**
-Execute the provided script to download the required weights:
-Windows: pull_models.bat
-Mac/Linux: sh pull_models.sh
+`ash
+pip install flask chromadb requests
+python 6_builder_app.py
+`
 
-3. **Launch:**
-Run: python 6_builder_app.py
-Access the frontend at http://localhost:5000.
+> **Note:** The UI runs on port 5000. Access your terminal at http://localhost:5000. No telemetry is transmitted off your machine.
