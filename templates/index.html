@@ -420,18 +420,26 @@
 
     // GOVERNANCE MODAL
     document.getElementById('btn-gov').addEventListener('click', function() {
+        if (document.getElementById('uncensored-toggle').checked) return; // Locked in Heretic
         document.getElementById('gov-modal').style.display = 'flex';
         fetch('/api/governance')
             .then(res => res.json())
             .then(data => {
-                document.getElementById('gov-sessions').innerText = data.total_tasks || '--';
-                let thrashing = data.total_tasks ? ((data.total_actions / data.total_tasks) * 10).toFixed(1) : 0;
-                document.getElementById('gov-thrashing').innerText = thrashing + '%';
+                document.getElementById('gov-sessions').innerText = data.total_sessions || '0';
+                document.getElementById('gov-thrashing').innerText = (data.thrashing_rate || 0) + '%';
                 document.getElementById('gov-tokens').innerText = (data.total_tokens || 0).toLocaleString();
-                document.getElementById('gov-violations').innerText = data.sandbox_violations || '0';
+                document.getElementById('gov-violations').innerText = data.total_violations || '0';
                 
-                if (data.sandbox_violations > 0) {
-                    document.getElementById('gov-log').innerHTML = `<div style="color:var(--accent-red);"><i data-lucide="alert-triangle" class="lucide-sm"></i> Detected ${data.sandbox_violations} execution boundary violation(s) across all tasks.</div>`;
+                if (data.recent_violations && data.recent_violations.length > 0) {
+                    let html = '<div style="display:flex; flex-direction:column; gap:8px;">';
+                    data.recent_violations.forEach(v => {
+                        html += `<div style="background:var(--bg-mid); padding:10px; border-radius:6px; border-left:3px solid var(--accent-red);">
+                            <strong>Action:</strong> ${v.action_type}<br/>
+                            <pre style="margin:5px 0; font-size:0.8rem; overflow-x:auto; white-space:pre-wrap; font-family:monospace; color:var(--text-main);">${v.content}</pre>
+                        </div>`;
+                    });
+                    html += '</div>';
+                    document.getElementById('gov-log').innerHTML = html;
                 } else {
                     document.getElementById('gov-log').innerHTML = '<div style="color:var(--accent-green);"><i data-lucide="check-circle" class="lucide-sm"></i> No critical sandbox violations found.</div>';
                 }
@@ -440,6 +448,22 @@
             .catch(err => {
                 document.getElementById('gov-log').innerHTML = `<div style="color:var(--accent-red);">Error loading governance data: ${err.message}</div>`;
             });
+    });
+
+    // Heretic Toggle UI lock
+    document.getElementById('uncensored-toggle').addEventListener('change', function() {
+        const govBtn = document.getElementById('btn-gov');
+        if (this.checked) {
+            govBtn.style.opacity = '0.3';
+            govBtn.style.textDecoration = 'line-through';
+            govBtn.style.cursor = 'not-allowed';
+            govBtn.title = "Governance tracking disabled in Heretic Mode";
+        } else {
+            govBtn.style.opacity = '1';
+            govBtn.style.textDecoration = 'none';
+            govBtn.style.cursor = 'pointer';
+            govBtn.title = "";
+        }
     });
 
         // FILE UPLOADS

@@ -623,34 +623,24 @@ def search():
         }
     }
     
-    try:
-        from backend.governance.logger import log_action
-        log_action(f"search-{str(uuid.uuid4())[:8]}", 1, "search", final_resp, orch_metrics.get("completion_tokens", 0), orch_metrics.get("eval_duration", 0) // 1_000_000)
-    except Exception:
-        pass
+    if not uncensored:
+        try:
+            from backend.governance.logger import log_action
+            log_action(f"search-{str(uuid.uuid4())[:8]}", 1, "search", final_resp, orch_metrics.get("completion_tokens", 0), orch_metrics.get("eval_duration", 0) // 1_000_000)
+        except Exception:
+            pass
         
     return jsonify(response)
 
 
 @app.route('/api/governance', methods=['GET'])
 def get_governance():
-    """Phase 1.4: Upgraded to use new modular governance logger with full stats."""
+    """Returns governance stats and recent violations for the UI."""
     try:
-        import sys
-        sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'swarm-ide'))
-        from backend.governance.logger import get_stats, get_task_trajectory
-        stats = get_stats()
-        task_id = request.args.get('task_id')
-        if task_id:
-            stats['trajectory'] = get_task_trajectory(task_id)
-        return jsonify(stats)
+        metrics = governance_logger.get_governance_metrics()
+        return jsonify(metrics)
     except Exception as e:
-        # Fallback to legacy governance logger
-        try:
-            metrics = governance_logger.get_governance_metrics()
-            return jsonify(metrics)
-        except Exception:
-            return jsonify({'error': str(e)}), 500
+        return jsonify({'error': str(e)}), 500
 
 
 @app.route('/api/skills/discover', methods=['POST'])
