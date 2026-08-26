@@ -44,6 +44,7 @@
     <div id="root"></div>
 
     <script type="text/babel">
+{% raw %}
         const { useState, useEffect, useRef } = React;
 
         // Custom Markdown component that handles <think> and <execute_bash> tags
@@ -338,6 +339,8 @@
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
+    {% endraw %}
     </script>
 </body>
 </html>
+
