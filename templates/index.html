@@ -116,6 +116,25 @@
             const messagesEndRef = useRef(null);
 
             useEffect(() => {
+                // Auto-cleanup duplicate sessions by title
+                setSessions(prev => {
+                    const unique = [];
+                    const seen = new Set();
+                    for (const s of prev) {
+                        if (!seen.has(s.title)) {
+                            seen.add(s.title);
+                            unique.push(s);
+                        }
+                    }
+                    if (unique.length !== prev.length) {
+                        localStorage.setItem('swarmV2Sessions', JSON.stringify(unique));
+                        return unique;
+                    }
+                    return prev;
+                });
+            }, []);
+
+            useEffect(() => {
                 localStorage.setItem('swarmV2History', JSON.stringify(history));
                 localStorage.setItem('swarmV2SessionId', currentSessionId);
                 
@@ -397,7 +416,7 @@
                                                     </div>
                                                 ) : (
                                                     <div className="flex flex-col gap-2 w-full">
-                                                        {msg.content ? <RichMessage content={msg.content} /> : <div className="loader"></div>}
+                                                        {msg.content ? <RichMessage content={msg.content} /> : ((isStreaming && idx === history.length - 1) ? <div className="loader"></div> : <span className="text-red-400 italic text-sm">⚠️ Connection dropped. Empty response.</span>)}
                                                     </div>
                                                 )}
                                             </div>
@@ -471,6 +490,9 @@
     </script>
 </body>
 </html>
+
+
+
 
 
 
