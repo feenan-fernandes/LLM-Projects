@@ -381,7 +381,7 @@ def serve_static(filename): return send_from_directory('static', filename)
 @app.route('/governance_stats', methods=['GET'])
 def governance_stats():
     import sqlite3, os
-    db_path = os.path.join(os.path.dirname(__file__), 'workspace', 'governance.db')
+    db_path = os.path.join(os.path.dirname(__file__), 'governance.db')
     if not os.path.exists(db_path):
         return jsonify({"total_sessions": 0, "total_actions": 0, "uncensored_sessions": 0})
     
