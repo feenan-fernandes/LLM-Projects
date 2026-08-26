@@ -1,25 +1,13 @@
-"""
-sandbox.py  — Phase 2 (no Docker) + Phase 6 patch support
-Pre-execution guard with transactional workspace snapshot/rollback
-(AgentBound / Fault-Tolerant Sandboxing pattern, arXiv:2510.21236 & 2512.12806).
-
-Since Docker Desktop is not installed, we implement:
-  1. Pre-exec blocklist (existing)
-  2. Copy-on-write workspace snapshot before every execution
-  3. Automatic rollback on non-zero exit codes
-  4. Hard timeout enforcement
-  5. Resource-limited subprocess (no network calls from agent scripts)
-"""
-import os
+﻿import os
 import re
 import shutil
 import subprocess
 import tempfile
 import time
+import platform
 
 from backend.governance.logger import log_action
 
-# Blocklist: patterns matched against the full command string (lowercased)
 BLOCKLIST_PATTERNS = [
     r"rm\s+-rf",
     r"mkfs",
@@ -27,18 +15,16 @@ BLOCKLIST_PATTERNS = [
     r"curl\s+.*\|\s*sh",
     r"wget\s+.*\|\s*sh",
     r"format\s+[a-z]:",
-    r"del\s+/[sq]",           # Windows destructive delete
+    r"del\s+/[sq]",
     r"shutdown",
-    r"reg\s+delete",          # Windows registry delete
-    r":(){:|:&};:",            # fork bomb
+    r"reg\s+delete",
+    r":(){:|:&};:",
 ]
 
 WORKSPACE_DIR = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'workspace')
 
-
 class SandboxViolationError(Exception):
     pass
-
 
 def _check_blocklist(cmd: str):
     cmd_lower = cmd.lower()
@@ -48,9 +34,7 @@ def _check_blocklist(cmd: str):
                 f"SANDBOX VIOLATION: command '{cmd}' matched blocklist pattern '{pattern}'"
             )
 
-
 def _snapshot_workspace(workspace: str) -> str | None:
-    """Creates a copy-on-write snapshot of the workspace directory. Returns snapshot path."""
     try:
         snap = tempfile.mkdtemp(prefix="swarm_snap_")
         if os.path.isdir(workspace):
@@ -59,9 +43,7 @@ def _snapshot_workspace(workspace: str) -> str | None:
     except Exception:
         return None
 
-
 def _restore_snapshot(snapshot: str, workspace: str):
-    """Restores the workspace from a snapshot, then cleans up the snapshot."""
     snap_ws = os.path.join(snapshot, "workspace")
     if not os.path.isdir(snap_ws):
         return
@@ -72,11 +54,16 @@ def _restore_snapshot(snapshot: str, workspace: str):
     finally:
         shutil.rmtree(snapshot, ignore_errors=True)
 
-
 def _cleanup_snapshot(snapshot: str):
     if snapshot:
         shutil.rmtree(snapshot, ignore_errors=True)
 
+def _is_docker_available() -> bool:
+    try:
+        res = subprocess.run(["docker", "info"], capture_output=True, timeout=3)
+        return res.returncode == 0
+    except (FileNotFoundError, subprocess.TimeoutExpired):
+        return False
 
 def execute_command_safely(
     cmd: str,
@@ -86,17 +73,6 @@ def execute_command_safely(
     timeout: int = 30,
     rollback_on_failure: bool = False,
 ) -> dict:
-    """
-    Executes a shell command after:
-      1. Blocklist check (pre-execution gate — command never reaches shell if blocked)
-      2. Workspace snapshot (copy-on-write)
-      3. Subprocess execution with hard timeout
-      4. Automatic rollback if exit code != 0 and rollback_on_failure=True
-      5. Governance logging of outcome
-
-    Returns: {success, stdout, stderr, code, rolled_back}
-    """
-    # 1. Pre-execution blocklist gate
     try:
         _check_blocklist(cmd)
     except SandboxViolationError as e:
@@ -107,24 +83,51 @@ def execute_command_safely(
     workspace = os.path.abspath(cwd or WORKSPACE_DIR)
     run_cwd = workspace if os.path.isdir(workspace) else os.getcwd()
 
-    # 2. Snapshot before execution
     snapshot = _snapshot_workspace(run_cwd) if rollback_on_failure else None
 
     t0 = time.monotonic()
     try:
-        result = subprocess.run(
-            cmd,
-            shell=True,
-            cwd=run_cwd,
-            capture_output=True,
-            text=True,
-            timeout=timeout,
-        )
+        if _is_docker_available():
+            # Run inside ephemeral Docker container
+            # Map Windows paths appropriately
+            mapped_path = run_cwd.replace('\\\\', '/')
+            if mapped_path.startswith('C:'):
+                mapped_path = '/c' + mapped_path[2:]
+            elif mapped_path.startswith('c:'):
+                mapped_path = '/c' + mapped_path[2:]
+                
+            docker_cmd = [
+                "docker", "run", "--rm",
+                "--network", "none",
+                "--memory", "1g",
+                "--cpus", "1.0",
+                "-v", f"{run_cwd}:/workspace",
+                "-w", "/workspace",
+                "python:3.11-slim",
+                "bash", "-c", cmd
+            ]
+            
+            result = subprocess.run(
+                docker_cmd,
+                capture_output=True,
+                text=True,
+                timeout=timeout,
+            )
+        else:
+            # Fallback to local subprocess
+            result = subprocess.run(
+                cmd,
+                shell=True,
+                cwd=run_cwd,
+                capture_output=True,
+                text=True,
+                timeout=timeout,
+            )
+            
         latency_ms = int((time.monotonic() - t0) * 1000)
         success = result.returncode == 0
         rolled_back = False
 
-        # 3. Rollback on failure
         if not success and rollback_on_failure and snapshot:
             _restore_snapshot(snapshot, run_cwd)
             rolled_back = True
