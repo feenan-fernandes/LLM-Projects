@@ -44,7 +44,7 @@
     <div id="root"></div>
 
     <script type="text/babel">
-{% raw %}
+        {% raw %}
         const { useState, useEffect, useRef } = React;
 
         // Custom Markdown component that handles <think> and <execute_bash> tags
@@ -190,7 +190,7 @@
                                         const newHistory = [...prev];
                                         const lastMsg = newHistory[newHistory.length - 1];
                                         // Append observations as system notes
-                                        lastMsg.content += \n\n> **[SYSTEM OBS]** : \n> \\\\n> \n> \\\\n\n;
+                                        lastMsg.content += `\n\n> **[SYSTEM OBS]** ${chunk.action}: \n> \`\`\`\n> ${chunk.result}\n> \`\`\`\n\n`;
                                         return newHistory;
                                     });
                                 } else if (chunk.type === 'finish') {
@@ -259,9 +259,9 @@
                             ) : (
                                 <div className="max-w-4xl mx-auto flex flex-col gap-6">
                                     {history.map((msg, idx) => (
-                                        <div key={idx} className={lex gap-4 }>
+                                        <div key={idx} className={`flex gap-4 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                                             {msg.role === 'assistant' && <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center shrink-0 shadow border border-blue-500">🤖</div>}
-                                            <div className={max-w-[85%] rounded-xl p-4 shadow-sm }>
+                                            <div className={`max-w-[85%] rounded-xl p-4 shadow-sm ${msg.role === 'user' ? 'bg-gray-800 border border-gray-700' : 'bg-transparent border-l-2 border-blue-500'}`}>
                                                 {msg.role === 'user' ? (
                                                     <div className="text-sm text-gray-300 whitespace-pre-wrap">
                                                         {msg.content}
@@ -339,8 +339,7 @@
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
-    {% endraw %}
+        {% endraw %}
     </script>
 </body>
 </html>
-
