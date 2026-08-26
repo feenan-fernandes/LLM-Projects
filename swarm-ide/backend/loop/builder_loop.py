@@ -16,7 +16,7 @@ from backend.loop.sandbox import execute_command_safely, SandboxViolationError
 from backend.governance.logger import log_action
 
 MAX_ITERATIONS = 10
-PARTIAL_THRESHOLD = 6   # if no tests passing by this iter → flag partial
+PARTIAL_THRESHOLD = 6   # if no tests passing by this iter â†’ flag partial
 
 
 # ---------------------------------------------------------------------------
@@ -136,7 +136,7 @@ def run_builder_loop(
 
         # ---------------------------------------------------------------
         try:
-            # 1. PLAN — surface to UI, no side-effects
+            # 1. PLAN â€” surface to UI, no side-effects
             if action_type == "plan":
                 observation = (
                     f"Plan acknowledged.\n"
@@ -146,7 +146,7 @@ def run_builder_loop(
                     f"IMPORTANT: Plan is stored in memory. DO NOT output <plan> again. You must now take the FIRST action using <write_file> or <execute_bash>."
                 )
 
-            # 2. SEARCH GITHUB SKILLS — read-only, no approval needed
+            # 2. SEARCH GITHUB SKILLS â€” read-only, no approval needed
             elif action_type == "search_github_skills":
                 from backend.agents.skill_scout import search_skills
                 results = search_skills(
@@ -160,15 +160,15 @@ def run_builder_loop(
                     observation = "No candidate skills found matching query."
                 _emit({"type": "skill_discovery", "candidates": results if results else []})
 
-            # 3. EVALUATE SKILL — Librarian grades one repo
+            # 3. EVALUATE SKILL â€” Librarian grades one repo
             elif action_type == "evaluate_skill":
                 from backend.agents.librarian import grade_skill_relevance
                 repo_url = args.get("repo_url", "")
                 # In real flow we'd fetch SKILL.md; in loop we use repo description
                 approved = grade_skill_relevance(task_description, repo_url)
-                observation = f"Librarian evaluation: {'APPROVED' if approved else 'REJECTED'} — {repo_url}"
+                observation = f"Librarian evaluation: {'APPROVED' if approved else 'REJECTED'} â€” {repo_url}"
 
-            # 4. INSTALL SKILL — REQUIRES HUMAN APPROVAL
+            # 4. INSTALL SKILL â€” REQUIRES HUMAN APPROVAL
             elif action_type == "install_skill":
                 pending = _human_approval_pending(action)
                 _emit({"type": "approval_required", "pending": pending})
@@ -211,10 +211,13 @@ def run_builder_loop(
                 diff_str = args.get("diff", "")
                 workspace_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'workspace'))
                 full_path = os.path.abspath(os.path.join(workspace_dir, path))
+                
+                path_safe = False
                 try:
                     path_safe = os.path.commonpath([workspace_dir, full_path]) == workspace_dir
                 except ValueError:
                     path_safe = False
+                
                 if not path_safe:
                     observation = f"Sandbox violation: Cannot write outside workspace directory."
                 else:
@@ -222,12 +225,12 @@ def run_builder_loop(
                         import patch as patch_lib
                         pset = patch_lib.fromstring(diff_str.encode('utf-8'))
                         success = pset.apply(root=os.path.dirname(full_path))
-                    if success:
-                        observation = f"Patch applied successfully to {path}"
-                    else:
-                        observation = f"Failed to apply patch to {path}. Context mismatch. Try <write_file> instead."
-                except Exception as e:
-                    observation = f"Error applying patch to {path}: {e}"
+                        if success:
+                            observation = f"Patch applied successfully to {path}"
+                        else:
+                            observation = f"Failed to apply patch to {path}. Context mismatch. Try <write_file> instead."
+                    except Exception as e:
+                        observation = f"Error applying patch to {path}: {e}"
 
             # 6. WRITE FILE
 
@@ -343,7 +346,7 @@ def run_builder_loop(
                     _emit({"type": "action", "iteration": iteration, "action": "partial_flag", "result": summary})
                     return False, iteration, summary
 
-            # 9. SELF HEAL — delegate to Tester
+            # 9. SELF HEAL â€” delegate to Tester
             elif action_type == "self_heal":
                 error_summary = args.get("error_summary", "")
                 hypothesis = args.get("hypothesis", "")
@@ -399,3 +402,4 @@ def run_builder_loop(
     # Iteration budget exhausted
     log_action(task_id, MAX_ITERATIONS, "timeout", "Iteration budget (8) exhausted.", 0, 0)
     return False, MAX_ITERATIONS, "Failed: iteration budget exhausted."
+
