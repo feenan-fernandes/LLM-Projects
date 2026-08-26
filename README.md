@@ -10,7 +10,7 @@
   <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License">
 </p>
 
-# Swarm IDE 
+# Swarm IDE 
 
 **An absolutely air-gapped, auto-healing developer environment.** Swarm IDE ditches cloud APIs entirely, running a customized micro-swarm of local agents over Ollama. When your code crashes, the swarm reads the stack trace, diagnoses the root cause, writes a patch, and validates it inside a local sandboxâ€”all without human intervention.
 
