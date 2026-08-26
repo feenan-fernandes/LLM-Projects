@@ -60,7 +60,7 @@ python 6_builder_app.py
 
 ---
 
-## âš–ï¸ License
+## License
 
 This project is licensed under the **MIT License**. You are free to use, modify, and distribute this software in personal or commercial projects.
 
