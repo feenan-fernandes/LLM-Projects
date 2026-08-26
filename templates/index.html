@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
@@ -324,9 +324,16 @@
                                             <div 
                                                 key={s.id} 
                                                 onClick={() => loadSession(s)}
-                                                className={`text-sm truncate cursor-pointer py-1.5 px-2 rounded ${currentSessionId === s.id ? 'bg-blue-600/20 text-blue-400' : 'hover:bg-gray-700 text-gray-400 hover:text-white'}`}
+                                                className={`group flex items-center justify-between text-sm cursor-pointer py-1.5 px-2 rounded ${currentSessionId === s.id ? 'bg-blue-600/20 text-blue-400' : 'hover:bg-gray-700 text-gray-400 hover:text-white'}`}
                                             >
-                                                {s.title}
+                                                <span className="truncate pr-2">{s.title}</span>
+                                                <button 
+                                                    onClick={(e) => deleteSession(e, s.id)}
+                                                    className="text-gray-500 hover:text-red-400 text-lg leading-none px-1 rounded hover:bg-red-400/10 transition flex-shrink-0"
+                                                    title="Delete Session"
+                                                >
+                                                    &times;
+                                                </button>
                                             </div>
                                         ))
                                     }
