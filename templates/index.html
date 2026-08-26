@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Swarm IDE | Autonomous Builder</title>
     
     <!-- Fonts & Icons -->
@@ -18,6 +19,7 @@
         :root {
             --bg-base: #09090b; /* Zinc 950 */
             --bg-panel: #18181b; /* Zinc 900 */
+            --bg-mid: #1f1f23;
             --bg-surface: #27272a; /* Zinc 800 */
             --border: #27272a;
             --border-light: #3f3f46;
@@ -205,7 +207,7 @@
 <body>
 
     <!-- GOVERNANCE MODAL -->
-    <div id="gov-modal" class="modal-overlay">
+    <div id="gov-modal" class="modal-overlay" role="dialog" aria-modal="true">
         <div class="modal-content">
             <div class="modal-header">
                 <h2><i data-lucide="shield-alert" class="lucide-lg" style="color:var(--accent-blue);"></i> AI Governance & Auditing</h2>
@@ -218,7 +220,7 @@
                 <div class="stat-box"><h4>Sandbox Violations</h4><p id="gov-violations" style="color:var(--accent-red);">--</p></div>
             </div>
             <h4 style="margin:0 0 10px 0; font-size:0.9rem; color:var(--accent-red);">Recent Violation Log</h4>
-            <div id="gov-log" class="violation-log">No violations logged.</div>
+            <div id="gov-log" class="violation-log" style="max-height:200px; overflow-y:auto;">No violations logged.</div>
         </div>
     </div>
 
@@ -242,6 +244,11 @@
             <option value="data_visualization">Workspace Context: Data Viz</option>
             <option value="tableau">Workspace Context: Tableau</option>
         </select>
+        
+        <div style="margin-bottom:15px;">
+            <button id="btn-new-chat" style="width:100%; padding:10px; background:var(--accent-blue); color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:600; font-size:0.85rem; display:flex; align-items:center; justify-content:center; gap:6px; transition:0.2s;">+ New Chat</button>
+        </div>
+        <div id="session-list" style="flex:1; overflow-y:auto; margin-bottom:15px; max-height:200px;"></div>
         
         <div id="uncensored-container" class="uncensored-wrap" style="display: none;">
             <input type="checkbox" id="uncensored-toggle" style="cursor:pointer;">
@@ -315,12 +322,12 @@
     </main>
 
     <script>
-        window.chatHistory = JSON.parse(localStorage.getItem('swarmChatHistory') || '[]');
+        try { window.chatHistory = JSON.parse(localStorage.getItem('swarmChatHistory') || '[]'); } catch(e) { window.chatHistory = []; }
         document.addEventListener('DOMContentLoaded', () => {
             const savedLog = localStorage.getItem('swarmChatLog');
             if (savedLog) {
-                document.getElementById('chat-log').innerHTML = savedLog;
-                const log = document.getElementById('chat-log');
+                document.getElementById('builder-log').innerHTML = savedLog;
+                const log = document.getElementById('builder-log');
                 log.scrollTop = log.scrollHeight;
             }
             const draft = localStorage.getItem('swarmDraft');
@@ -396,6 +403,8 @@
             document.getElementById('tab-3d').style.display = 'block';
             document.getElementById('results-container').style.display = 'flex';
             document.getElementById('deploy-btn').style.background = 'var(--text-main)';
+            document.getElementById('deploy-btn').innerHTML = '<i data-lucide="search" class="lucide-sm"></i> Search';
+            if(window.lucide) window.lucide.createIcons();
             document.getElementById('topic-selector').style.display = 'block';
             
             // Fix resize after un-hide
@@ -415,6 +424,8 @@
             document.getElementById('tab-3d').style.display = 'none';
             document.getElementById('results-container').style.display = 'none';
             document.getElementById('deploy-btn').style.background = 'var(--text-main)';
+            document.getElementById('deploy-btn').innerHTML = '<i data-lucide="play" class="lucide-sm"></i> Run';
+            if(window.lucide) window.lucide.createIcons();
             document.getElementById('topic-selector').style.display = 'none';
     });
 
@@ -450,6 +461,10 @@
             });
     });
 
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') document.getElementById('gov-modal').style.display = 'none';
+    });
+
     // Heretic Toggle UI lock
     document.getElementById('uncensored-toggle').addEventListener('change', function() {
         const govBtn = document.getElementById('btn-gov');
@@ -465,6 +480,63 @@
             govBtn.title = "";
         }
     });
+
+// Session Management
+window.swarmSessions = JSON.parse(localStorage.getItem('swarmSessions') || '[]');
+window.currentSessionId = 'session-' + Date.now();
+
+function renderSessionList() {
+    const list = document.getElementById('session-list');
+    if (!list) return;
+    if (window.swarmSessions.length === 0) {
+        list.innerHTML = '<div style="color:var(--text-muted); font-size:0.75rem; text-align:center; padding:10px;">No previous sessions</div>';
+        return;
+    }
+    list.innerHTML = window.swarmSessions.slice().reverse().slice(0, 20).map((s, i) => 
+        `<div onclick="loadSession('${s.id}')" style="padding:8px 10px; cursor:pointer; border-radius:6px; margin-bottom:4px; background:var(--bg-panel); border:1px solid var(--border); font-size:0.75rem; color:var(--text-muted); transition:0.2s; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" onmouseover="this.style.borderColor='var(--accent-blue)'" onmouseout="this.style.borderColor='var(--border)'">
+            <span style="color:var(--text-main);">${s.title || 'Untitled'}</span><br/>
+            <span style="font-size:0.65rem;">${new Date(parseInt(s.id.split('-')[1])).toLocaleString()}</span>
+        </div>`
+    ).join('');
+}
+
+window.loadSession = function(sessionId) {
+    const session = window.swarmSessions.find(s => s.id === sessionId);
+    if (!session) return;
+    window.currentSessionId = sessionId;
+    document.getElementById('builder-log').innerHTML = session.log || '<div style="color: var(--text-muted);">> Swarm Builder standby...</div>';
+    window.chatHistory = session.history || [];
+};
+
+function saveCurrentSession(title) {
+    const existing = window.swarmSessions.findIndex(s => s.id === window.currentSessionId);
+    const sessionData = {
+        id: window.currentSessionId,
+        title: (title || '').substring(0, 60),
+        log: document.getElementById('builder-log').innerHTML,
+        history: window.chatHistory
+    };
+    if (existing >= 0) window.swarmSessions[existing] = sessionData;
+    else window.swarmSessions.push(sessionData);
+    try { localStorage.setItem('swarmSessions', JSON.stringify(window.swarmSessions.slice(-20))); } catch(e) {}
+    renderSessionList();
+}
+
+document.getElementById('btn-new-chat').addEventListener('click', function() {
+    if (document.getElementById('builder-log').innerHTML.trim() !== '<div style="color: var(--text-muted);">> Swarm Builder standby...</div>') {
+        saveCurrentSession(window.chatHistory.length > 0 ? window.chatHistory[0].user : 'Untitled');
+    }
+    window.currentSessionId = 'session-' + Date.now();
+    window.chatHistory = [];
+    document.getElementById('builder-log').innerHTML = '<div style="color: var(--text-muted);">> Swarm Builder standby...</div>';
+    document.getElementById('results-container').innerHTML = '';
+    localStorage.removeItem('swarmChatHistory');
+    localStorage.removeItem('swarmChatLog');
+    localStorage.removeItem('swarmDraft');
+    document.getElementById('query').value = '';
+});
+
+renderSessionList();
 
         // FILE UPLOADS
         document.getElementById('file-upload').addEventListener('change', function(e) {
@@ -572,7 +644,7 @@
             localStorage.removeItem('swarmChatHistory');
             localStorage.removeItem('swarmChatLog');
             localStorage.removeItem('swarmDraft');
-            document.getElementById('chat-log').innerHTML = '';
+            document.getElementById('builder-log').innerHTML = '';
             queryInput.value = '';
             queryInput.style.height = 'auto';
             return;
@@ -593,6 +665,7 @@
             const isUncensored = document.getElementById('uncensored-toggle').checked;
             const topic = document.getElementById('topic-selector').value;
             
+            const filesToSend = [...attachedFilesData];
             let finalQuery = query;
             if (attachedFilesData.length > 0) {
                 finalQuery += "\\n\\n--- ATTACHED CONTEXT ---\\n";
@@ -612,13 +685,6 @@
                 log.innerHTML += `<div style="margin-top:20px; padding:10px; background:#161b22; border:1px solid #30363d; border-radius:6px;">
                     <strong style="color: #c9d1d9;">USER:</strong> ${query.replace(/</g, '&lt;')}
                 </div>`;
-                
-                let finalQuery = query;
-                const filesToSend = [...attachedFilesData];
-                
-                // Clear UI state for next interaction
-                attachedFilesData = [];
-                updateAttachedUI();
                 
                 log.innerHTML += `
                 <div id="${turnId}" style="margin-top:10px; margin-bottom: 20px; padding-left: 15px; border-left: 2px solid #58a6ff;">
@@ -708,13 +774,18 @@
                                     else if (data.action === "install_skill") { icon = "download"; stepMsg = "Agent downloading skill."; }
                                     else if (data.action === "select_skill") { icon = "check-circle"; stepMsg = "Agent selected a skill context."; }
                                     else if (data.action === "partial_flag") { icon = "flag"; stepMsg = "Agent reached iteration limits."; }
-                                    else if (data.action === "invalid_xml") { icon = "alert-circle"; stepMsg = "System steering agent safely."; }
+                                    else if (data.action === "invalid_xml") { icon = "alert-circle"; stepMsg = "Agent output format error. Auto-correcting..."; }
                                     else { icon = "check"; stepMsg = "Agent completed step."; }
+
+                                    let displayResult = data.result;
+                                    if (data.action === 'invalid_xml') {
+                                        displayResult = "The agent produced an incorrectly formatted response. The system is automatically re-prompting with schema correction rules.";
+                                    }
 
                                     turnLog.innerHTML += `
                                     <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed var(--border);">
                                         <strong style="color: var(--accent-yellow);"><i data-lucide="${icon}" class="lucide-sm" style="display:inline-block; vertical-align:middle; margin-right:4px;"></i> Step ${data.iteration}: ${stepMsg}</strong>
-                                        <pre style="background:var(--bg-base); padding:8px; border:1px solid var(--border); border-radius:4px; max-height:200px; overflow-y:auto; font-size:0.8rem; margin-top:5px; color: var(--text-muted);">${data.result.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
+                                        <pre style="background:var(--bg-base); padding:8px; border:1px solid var(--border); border-radius:4px; max-height:200px; overflow-y:auto; font-size:0.8rem; margin-top:5px; color: var(--text-muted);">${displayResult.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
                                     </div>`;
                                     if (window.lucide) window.lucide.createIcons();
                                 } else if (data.type === 'finish') {
@@ -767,6 +838,7 @@
                     queryInput.style.height = 'auto';
                     localStorage.removeItem('swarmDraft');
                     deployBtn.disabled = false;
+                    saveCurrentSession(query);
                     deployBtn.innerHTML = originalBtnText;
                 });
                 

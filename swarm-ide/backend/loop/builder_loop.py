@@ -6,6 +6,7 @@ delegates self_heal to the Tester agent, and enforces the iter-6 partial rule.
 """
 import os
 import json
+import re
 
 from backend.agents.orchestrator import call_orchestrator
 from backend.agents.tester import diagnose_and_fix
@@ -14,8 +15,8 @@ from backend.loop.action_parser import parse_action, extract_thought
 from backend.loop.sandbox import execute_command_safely, SandboxViolationError
 from backend.governance.logger import log_action
 
-MAX_ITERATIONS = 25
-PARTIAL_THRESHOLD = 20   # if no tests passing by this iter → flag partial
+MAX_ITERATIONS = 10
+PARTIAL_THRESHOLD = 6   # if no tests passing by this iter → flag partial
 
 
 # ---------------------------------------------------------------------------
@@ -51,7 +52,8 @@ def run_builder_loop(
     approval_callback=None,   # callable(pending_dict) -> bool  (True = approved)
     stream_callback=None,     # callable(event_dict) -> None    (for SSE)
     skill_context_override=None,  # pre-loaded SKILL.md text injected at start
-    model="deepseek-r1:7b"
+    model="deepseek-r1:7b",
+    system_prompt=None
 ):
     """
     Executes up to MAX_ITERATIONS of the Section 5 action loop.
@@ -66,6 +68,7 @@ def run_builder_loop(
 
     tests_passed = False
     final_summary = ""
+    consecutive_invalid = 0
 
     def _emit(event):
         if stream_callback:
@@ -77,7 +80,7 @@ def run_builder_loop(
 
         # --- Call Orchestrator (or use mock) ---
         mock = mock_responses[i] if mock_responses and i < len(mock_responses) else None
-        response_text, metrics = call_orchestrator(conversation, model=model, mock_response=mock)
+        response_text, metrics = call_orchestrator(conversation, model=model, mock_response=mock, system_prompt=system_prompt)
 
         thought = extract_thought(response_text)
         action = parse_action(response_text)
@@ -90,6 +93,12 @@ def run_builder_loop(
 
         # --- No valid action ---
         if not action:
+            consecutive_invalid += 1
+            if consecutive_invalid >= 3:
+                summary = "Failed: 3 consecutive invalid XML actions."
+                _emit({"type": "action", "iteration": iteration, "action": "invalid_xml", "result": summary})
+                return False, iteration, summary
+
             # Partial check at iter 6
             if iteration >= PARTIAL_THRESHOLD and not tests_passed:
                 summary = (
@@ -107,10 +116,12 @@ def run_builder_loop(
             "Example:\n<execute_bash>\n  <command>ls -la</command>\n</execute_bash>"
         )
             log_action(task_id, iteration, "invalid_xml", obs, metrics["completion_tokens"], metrics["eval_duration"] // 1_000_000)
+            response_text = re.sub(r'<think>.*?</think>', '', response_text, flags=re.DOTALL).strip()
             conversation += f"\n\nASSISTANT:\n{response_text}\n\n<observation>\n{obs}\n</observation>\n\nNext action?"
             _emit({"type": "action", "iteration": iteration, "action": "invalid_xml", "result": obs})
             continue
 
+        consecutive_invalid = 0
         action_type = action["type"]
         args = action["args"]
         observation = ""
@@ -212,7 +223,13 @@ def run_builder_loop(
                 # Enforce workspace boundary
                 workspace_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'workspace'))
                 full_path = os.path.abspath(os.path.join(workspace_dir, path))
-                if not full_path.startswith(workspace_dir):
+                path_safe = False
+                try:
+                    path_safe = os.path.commonpath([workspace_dir, full_path]) == workspace_dir
+                except ValueError:
+                    path_safe = False
+                
+                if not path_safe:
                     observation = f"Sandbox violation: Cannot write outside workspace directory."
                 else:
                     os.makedirs(os.path.dirname(full_path), exist_ok=True)
@@ -243,7 +260,9 @@ def run_builder_loop(
                 if not os.path.exists(full_path):
                     observation = f"Skill '{name}' does not exist in workspace/skills/. You must <create_skill> first."
                 else:
-                    cmd = f'python "{full_path}" {skill_args}'
+                    import shlex
+                    safe_args = shlex.split(skill_args) if skill_args else []
+                    cmd = f'python "{full_path}" ' + ' '.join(f'"{a}"' for a in safe_args)
                     res = execute_command_safely(cmd, task_id=task_id, iteration=iteration)
                     observation = f"Skill Execution STDOUT:\n{res['stdout']}\nSTDERR:\n{res['stderr']}\nExit: {res['code']}"
 
@@ -328,6 +347,7 @@ def run_builder_loop(
             return success, iteration, final_summary
 
         # Append observation to conversation
+        response_text = re.sub(r'<think>.*?</think>', '', response_text, flags=re.DOTALL).strip()
         conversation += (
             f"\n\nASSISTANT:\n{response_text}\n\n"
             f"<observation>\n{observation}\n</observation>\n\n"

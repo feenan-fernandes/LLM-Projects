@@ -72,6 +72,18 @@ def log_action(
     Also emits an OTel child span if OTEL_EXPORTER_OTLP_ENDPOINT is configured.
     Returns True on success.
     """
+    import sys
+    root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+    if root_dir not in sys.path:
+        sys.path.append(root_dir)
+    try:
+        import governance_logger
+        # metrics map
+        metrics = {'prompt_tokens': 0, 'completion_tokens': tokens, 'eval_duration': latency_ms * 1_000_000}
+        governance_logger.log_action(task_id, iteration, "", action_type, content, content, metrics)
+    except Exception as e:
+        print(f"Failed to log to root governance_logger: {e}")
+
     # 1. SQLite write (always)
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()

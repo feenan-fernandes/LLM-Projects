@@ -5,7 +5,7 @@ All 11 action tags from Section 5 + patch_file.
 import re
 
 
-def _extract(text, tag, flags=re.DOTALL):
+def _extract(text, tag, flags=re.DOTALL | re.IGNORECASE):
     m = re.search(rf'<{tag}>(.*?)</{tag}>', text, flags)
     return m.group(1).strip() if m else None
 
@@ -130,5 +130,17 @@ def parse_action(xml_text):
             m = re.search(r'<finish[^>]*>(.*?)</finish>', xml_text, re.DOTALL)
             summary = m.group(1).strip() if m else ""
         return {"type": "finish", "args": {"status": status, "summary": summary}}
+
+    m_bash = re.search(r'```bash\n?(.*?)\n?```', xml_text, re.DOTALL | re.IGNORECASE)
+    if m_bash:
+        return {"type": "execute_bash", "args": {"command": m_bash.group(1).strip()}}
+
+    m_python = re.search(r'```python\n?(.*?)\n?```', xml_text, re.DOTALL | re.IGNORECASE)
+    if m_python:
+        return {"type": "write_file", "args": {"path": "scratch.py", "content": m_python.group(1).strip()}}
+
+    stripped_text = xml_text.strip()
+    if len(stripped_text) > 20:
+        return {"type": "finish", "args": {"summary": stripped_text}}
 
     return None

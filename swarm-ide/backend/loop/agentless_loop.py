@@ -18,7 +18,7 @@ from backend.rag.repo_map import build_repo_map
 WORKSPACE_DIR = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'workspace')
 
 
-def _localise(task: str, repo_map: str, model_mock=None, model="deepseek-r1:7b") -> dict:
+def _localise(task: str, repo_map: str, model_mock=None, model="deepseek-r1:7b", system_prompt=None) -> dict:
     """
     Phase 1: Ask the Orchestrator to identify the suspect file and line range.
     Returns {file, start_line, end_line, reasoning}.
@@ -32,7 +32,7 @@ def _localise(task: str, repo_map: str, model_mock=None, model="deepseek-r1:7b")
         "LINES: <start>-<end>\n"
         "REASON: <one sentence>"
     )
-    response, metrics = call_orchestrator(prompt, mock_response=model_mock, model=model)
+    response, metrics = call_orchestrator(prompt, mock_response=model_mock, model=model, system_prompt=system_prompt)
     file_m = re.search(r"FILE:\s*(.+)", response)
     lines_m = re.search(r"LINES:\s*(\d+)-(\d+)", response)
     reason_m = re.search(r"REASON:\s*(.+)", response)
@@ -73,7 +73,8 @@ def run_agentless_loop(
     mock_localise=None,
     mock_tester=None,
     stream_callback=None,
-    model="deepseek-r1:7b"
+    model="deepseek-r1:7b",
+    system_prompt=None
 ) -> list[dict]:
     """
     Localise -> Repair -> Validate in 3 iterations.
@@ -91,7 +92,7 @@ def run_agentless_loop(
     # --- Iteration 1: Localise ---
     _emit({"type": "action", "iteration": 1, "action": "think", "thought": f"Locating bug in repo map using {model}...", "result": "Running _localise..."})
     
-    localisation = _localise(task_description, repo_map, model_mock=mock_localise)
+    localisation = _localise(task_description, repo_map, model_mock=mock_localise, model=model, system_prompt=system_prompt)
     msg = f"File: {localisation['file']} Lines: {localisation['start_line']}-{localisation['end_line']}"
     log_action(task_id, 1, "agentless_localise",
                msg,

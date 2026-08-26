@@ -13,7 +13,7 @@ def load_system_prompt():
     except Exception:
         return "You are the Orchestrator."
 
-def call_orchestrator(conversation_context, model=DEFAULT_MODEL, temperature=0.1, mock_response=None):
+def call_orchestrator(conversation_context, model=DEFAULT_MODEL, temperature=0.1, mock_response=None, system_prompt=None):
     """
     Calls the local Ollama instance with deepseek-r1:7b.
     Allows injecting a `mock_response` for isolated unit tests.
@@ -21,8 +21,8 @@ def call_orchestrator(conversation_context, model=DEFAULT_MODEL, temperature=0.1
     if mock_response:
         return mock_response, {'prompt_tokens': 0, 'completion_tokens': 0, 'eval_duration': 0}
         
-    system_prompt = load_system_prompt()
-    full_prompt = f"{system_prompt}\n\n{conversation_context}"
+    sys_prompt = system_prompt if system_prompt is not None else load_system_prompt()
+    full_prompt = f"{sys_prompt}\n\n{conversation_context}"
     
     payload = {
         "model": model,
@@ -45,9 +45,9 @@ def call_orchestrator(conversation_context, model=DEFAULT_MODEL, temperature=0.1
         
     return "", {'prompt_tokens': 0, 'completion_tokens': 0, 'eval_duration': 0}
 
-def stream_orchestrator(conversation_context, model=DEFAULT_MODEL, temperature=0.1):
-    system_prompt = load_system_prompt()
-    full_prompt = f"{system_prompt}\n\n{conversation_context}"
+def stream_orchestrator(conversation_context, model=DEFAULT_MODEL, temperature=0.1, system_prompt=None):
+    sys_prompt = system_prompt if system_prompt is not None else load_system_prompt()
+    full_prompt = f"{sys_prompt}\n\n{conversation_context}"
     
     payload = {
         "model": model,
