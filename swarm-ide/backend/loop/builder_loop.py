@@ -227,7 +227,7 @@ def run_builder_loop(
                         pset = patch_lib.fromstring(diff_str.encode('utf-8'))
                         success = pset.apply(root=os.path.dirname(full_path))
                         if success:
-                            observation = f"Patch applied successfully to {path}"
+                            observation = f"Patch applied successfully to {path}"\n                            err = validate_file(full_path)\n                            if err: observation += "\n" + err
                         else:
                             observation = f"Failed to apply patch to {path}. Context mismatch. Try <write_file> instead."
                     except Exception as e:
@@ -259,7 +259,7 @@ def run_builder_loop(
                             content = content.replace(search, replace, 1)
                             with open(full_path, "w", encoding="utf-8") as f:
                                 f.write(content)
-                            observation = f"Successfully replaced block in {path}."
+                            observation = f"Successfully replaced block in {path}."\n                            err = validate_file(full_path)\n                            if err: observation += "\n" + err
                     except Exception as e:
                         observation = f"Error reading/writing {path}: {e}"
             elif action_type == "write_file":
@@ -281,7 +281,7 @@ def run_builder_loop(
                     os.makedirs(os.path.dirname(full_path), exist_ok=True)
                     with open(full_path, "w", encoding="utf-8") as f:
                         f.write(content)
-                    observation = f"File written: {path}"
+                    observation = f"File written: {path}"\n                    err = validate_file(full_path)\n                    if err: observation += "\n" + err
 
             elif action_type == "create_skill":
                 name = args.get("name", "")
@@ -313,7 +313,19 @@ def run_builder_loop(
                     observation = f"Skill Execution STDOUT:\n{_truncate_output(res['stdout'])}\nSTDERR:\n{_truncate_output(res['stderr'])}\nExit: {res['code']}"
 
             # 7. EXECUTE BASH
-            elif action_type == "execute_bash":
+            elif action_type == "search_web":
+                query = args.get("query", "")
+                try:
+                    from duckduckgo_search import DDGS
+                    results = DDGS().text(query, max_results=3)
+                    if results:
+                        observation = "Search Results:\n"
+                        for r in results:
+                            observation += f"- [{{r.get('title')}}]({{r.get('href')}})\n{{r.get('body')}}\n\n"
+                    else:
+                        observation = "No results found for query."
+                except Exception as e:
+                    observation = f"Web search failed: {e}"\n\n            elif action_type == "execute_bash":
                 cmd = args.get("command", "")
                 res = execute_command_safely(cmd, task_id=task_id, iteration=iteration)
                 observation = f"STDOUT:\n{_truncate_output(res['stdout'])}\nSTDERR:\n{_truncate_output(res['stderr'])}\nExit: {res['code']}"

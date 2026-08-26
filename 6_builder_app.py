@@ -434,11 +434,20 @@ def build():
         elif task_type == "knowledge":
             from backend.agents.orchestrator import stream_orchestrator
             
+            clean_sys = custom_sys or "You are an expert AI assistant. Answer the user conversationally and accurately. Do not use XML tags."
+            
+            hist_str = "\n--- PREVIOUS CONVERSATION ---\n"
+            for turn in history:
+                hist_str += f"{turn.get('role', '').upper()}: {turn.get('content', '')}\n"
+            hist_str += "--- END PREVIOUS CONVERSATION ---\n" if history else ""
+            
             q_prompt = (
-                "You are an expert assistant. The user has asked a question or provided a document. "
-                "Answer the user's request conversationally based on the context provided. Do NOT use XML tags, just output the answer.\n\n"
-                f"{prompt}"
+                f"{hist_str}\n"
+                "The user has asked a question or provided a document. "
+                "Answer the user's request based on the context provided.\n\n"
+                f"User: {prompt}"
             )
+
             # Notify UI we are thinking
             yield json.dumps({
                 "type": "action", "iteration": 1, "action": "think", 
@@ -449,7 +458,7 @@ def build():
             
             ans = ""
             metrics = {}
-            for chunk_data in stream_orchestrator(q_prompt, model=target_model, system_prompt=custom_sys):
+            for chunk_data in stream_orchestrator(q_prompt, model=target_model, system_prompt=clean_sys):
                 if 'response' in chunk_data:
                     chunk = chunk_data['response']
                     ans += chunk
