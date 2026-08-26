@@ -95,7 +95,7 @@
 
         const App = () => {
             const [sessions, setSessions] = useState(() => JSON.parse(localStorage.getItem('swarmV2Sessions') || '[]'));
-            const [currentSessionId, setCurrentSessionId] = useState(Date.now().toString());
+            const [currentSessionId, setCurrentSessionId] = useState(() => localStorage.getItem('swarmV2SessionId') || Date.now().toString());
             const [history, setHistory] = useState(() => JSON.parse(localStorage.getItem('swarmV2History') || '[]'));
             const [input, setInput] = useState('');
             const [files, setFiles] = useState([]);
@@ -116,6 +116,7 @@
 
             useEffect(() => {
                 localStorage.setItem('swarmV2History', JSON.stringify(history));
+                localStorage.setItem('swarmV2SessionId', currentSessionId);
                 
                 // Auto-save session
                 if (history.length > 0) {
@@ -137,6 +138,15 @@
             useEffect(() => {
                 localStorage.setItem('swarmV2Sessions', JSON.stringify(sessions));
             }, [sessions]);
+
+            const deleteSession = (e, id) => {
+                e.stopPropagation();
+                setSessions(prev => prev.filter(s => s.id !== id));
+                if (currentSessionId === id) {
+                    setHistory([]);
+                    setCurrentSessionId(Date.now().toString());
+                }
+            };
 
             const startNewChat = () => {
                 setHistory([]);
@@ -437,5 +447,6 @@
     </script>
 </body>
 </html>
+
 
 
