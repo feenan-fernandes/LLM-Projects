@@ -8,6 +8,14 @@ import platform
 
 from backend.governance.logger import log_action
 
+# Ensure docker is in PATH if installed in AppData
+DOCKER_APP_DATA = os.path.expandvars(r"%LOCALAPPDATA%\Programs\DockerDesktop\resources\bin")
+DOCKER_PROG_FILES = r"C:\Program Files\Docker\Docker\resources\bin"
+if os.path.exists(DOCKER_APP_DATA) and DOCKER_APP_DATA not in os.environ["PATH"]:
+    os.environ["PATH"] += os.pathsep + DOCKER_APP_DATA
+if os.path.exists(DOCKER_PROG_FILES) and DOCKER_PROG_FILES not in os.environ["PATH"]:
+    os.environ["PATH"] += os.pathsep + DOCKER_PROG_FILES
+
 BLOCKLIST_PATTERNS = [
     r"rm\s+-rf",
     r"mkfs",
@@ -60,7 +68,7 @@ def _cleanup_snapshot(snapshot: str):
 
 def _is_docker_available() -> bool:
     try:
-        res = subprocess.run(["docker", "info"], capture_output=True, timeout=3)
+        res = subprocess.run(["docker", "info"], capture_output=True, timeout=5)
         return res.returncode == 0
     except (FileNotFoundError, subprocess.TimeoutExpired):
         return False
@@ -88,8 +96,6 @@ def execute_command_safely(
     t0 = time.monotonic()
     try:
         if _is_docker_available():
-            # Run inside ephemeral Docker container
-            # Map Windows paths appropriately
             mapped_path = run_cwd.replace('\\\\', '/')
             if mapped_path.startswith('C:'):
                 mapped_path = '/c' + mapped_path[2:]
@@ -114,7 +120,6 @@ def execute_command_safely(
                 timeout=timeout,
             )
         else:
-            # Fallback to local subprocess
             result = subprocess.run(
                 cmd,
                 shell=True,
