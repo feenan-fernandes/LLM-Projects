@@ -61,7 +61,8 @@ def run_builder_loop(
     stream_callback=None,     # callable(event_dict) -> None    (for SSE)
     skill_context_override=None,  # pre-loaded SKILL.md text injected at start
     model="deepseek-r1:7b",
-    system_prompt=None
+    system_prompt=None,
+    abort_event=None
 ):
     """
     Executes up to MAX_ITERATIONS of the Section 5 action loop.
@@ -82,8 +83,12 @@ def run_builder_loop(
         if stream_callback:
             stream_callback(event)
 
-    for i in range(MAX_ITERATIONS):
-        iteration = i + 1
+    for iteration in range(1, MAX_ITERATIONS + 1):
+        if abort_event and abort_event.is_set():
+            _emit({"type": "action", "iteration": iteration, "action": "abort", "result": "Task aborted by user."})
+            return False, iteration, "Aborted by user"
+
+        i = iteration - 1
         _emit({"type": "system", "msg": f"Step {iteration}: Agent is thinking..."})
 
         # --- Call Orchestrator (or use mock) ---
