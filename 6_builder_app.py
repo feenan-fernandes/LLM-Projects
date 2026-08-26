@@ -12,6 +12,8 @@ import chromadb
 from chromadb.utils import embedding_functions
 import governance_logger
 
+import threading
+build_lock = threading.Lock()
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
@@ -544,7 +546,6 @@ def build():
                     'task_type': task_type
                 }) + '\n'
             else:
-                import threading
                 import queue
                 q = queue.Queue()
                 
