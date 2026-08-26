@@ -53,6 +53,7 @@ def _truncate_output(text: str, max_chars: int = 3000) -> str:
 
 def run_builder_loop(
     task_description,
+    history=None,
     task_id="task_default",
     mock_responses=None,
     # Callbacks provided by the Flask route / test harness:

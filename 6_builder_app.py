@@ -508,6 +508,7 @@ def build():
                     success, iters, summary = run_builder_loop(
                         prompt,
                         task_id=task_id,
+                        history=history,
                         skill_context_override=skill_ctx,
                         stream_callback=_collect,
                         model=target_model,
