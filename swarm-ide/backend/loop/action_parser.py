@@ -56,6 +56,13 @@ def parse_action(xml_text):
             "reason": _extract(xml_text, "reason") or "",
         }}
 
+
+    if "<replace_block>" in xml_text:
+        return {"type": "replace_block", "args": {
+            "path": _extract(xml_text, "path") or "",
+            "search": _extract(xml_text, "search") or "",
+            "replace": _extract(xml_text, "replace") or "",
+        }}
     if "<patch_file>" in xml_text:
         return {"type": "patch_file", "args": {
             "path": _extract(xml_text, "path") or "",

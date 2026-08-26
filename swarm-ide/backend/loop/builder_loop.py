@@ -44,6 +44,13 @@ def _human_approval_pending(action):
 # Main loop
 # ---------------------------------------------------------------------------
 
+
+def _truncate_output(text: str, max_chars: int = 3000) -> str:
+    if not text: return ""
+    if len(text) <= max_chars: return text
+    half = max_chars // 2
+    return text[:half] + "\n\n... [OUTPUT TRUNCATED to protect context window. Use grep to search] ...\n\n" + text[-half:]
+
 def run_builder_loop(
     task_description,
     task_id="task_default",
@@ -205,9 +212,16 @@ def run_builder_loop(
                 workspace_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'workspace'))
                 full_path = os.path.abspath(os.path.join(workspace_dir, path))
                 try:
-                    import patch as patch_lib
-                    pset = patch_lib.fromstring(diff_str.encode('utf-8'))
-                    success = pset.apply(root=os.path.dirname(full_path))
+                    path_safe = os.path.commonpath([workspace_dir, full_path]) == workspace_dir
+                except ValueError:
+                    path_safe = False
+                if not path_safe:
+                    observation = f"Sandbox violation: Cannot write outside workspace directory."
+                else:
+                    try:
+                        import patch as patch_lib
+                        pset = patch_lib.fromstring(diff_str.encode('utf-8'))
+                        success = pset.apply(root=os.path.dirname(full_path))
                     if success:
                         observation = f"Patch applied successfully to {path}"
                     else:
@@ -216,6 +230,34 @@ def run_builder_loop(
                     observation = f"Error applying patch to {path}: {e}"
 
             # 6. WRITE FILE
+
+            elif action_type == "replace_block":
+                path = args.get("path", "")
+                search = args.get("search", "")
+                replace = args.get("replace", "")
+                workspace_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'workspace'))
+                full_path = os.path.abspath(os.path.join(workspace_dir, path))
+                
+                try:
+                    path_safe = os.path.commonpath([workspace_dir, full_path]) == workspace_dir
+                except ValueError:
+                    path_safe = False
+                
+                if not path_safe:
+                    observation = f"Sandbox violation: Cannot write outside workspace directory."
+                else:
+                    try:
+                        with open(full_path, "r", encoding="utf-8") as f:
+                            content = f.read()
+                        if search not in content:
+                            observation = f"Failed to patch: The exact search block was not found in {path}. Make sure whitespace matches exactly."
+                        else:
+                            content = content.replace(search, replace, 1)
+                            with open(full_path, "w", encoding="utf-8") as f:
+                                f.write(content)
+                            observation = f"Successfully replaced block in {path}."
+                    except Exception as e:
+                        observation = f"Error reading/writing {path}: {e}"
             elif action_type == "write_file":
                 path = args.get("path", "")
                 content = args.get("content", "")
@@ -264,13 +306,13 @@ def run_builder_loop(
                     safe_args = shlex.split(skill_args) if skill_args else []
                     cmd = f'python "{full_path}" ' + ' '.join(f'"{a}"' for a in safe_args)
                     res = execute_command_safely(cmd, task_id=task_id, iteration=iteration)
-                    observation = f"Skill Execution STDOUT:\n{res['stdout']}\nSTDERR:\n{res['stderr']}\nExit: {res['code']}"
+                    observation = f"Skill Execution STDOUT:\n{_truncate_output(res['stdout'])}\nSTDERR:\n{_truncate_output(res['stderr'])}\nExit: {res['code']}"
 
             # 7. EXECUTE BASH
             elif action_type == "execute_bash":
                 cmd = args.get("command", "")
                 res = execute_command_safely(cmd, task_id=task_id, iteration=iteration)
-                observation = f"STDOUT:\n{res['stdout']}\nSTDERR:\n{res['stderr']}\nExit: {res['code']}"
+                observation = f"STDOUT:\n{_truncate_output(res['stdout'])}\nSTDERR:\n{_truncate_output(res['stderr'])}\nExit: {res['code']}"
 
             # 8. RUN TEST (Phase 5 InspectCoder augmentation)
             elif action_type == "run_test":
