@@ -14,7 +14,7 @@ Welcome to **Swarm IDE**, a privacy-first, fully local autonomous AI software en
 
 ### Launching the IDE
 To start the Swarm IDE, simply run the main Python script from the root of the project:
-`ash
+`bash
 python 6_builder_app.py
 `
 By default, the server will host the UI at http://127.0.0.1:5000. Navigate to this URL in your browser.
