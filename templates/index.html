@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -668,10 +668,6 @@ renderSessionList();
             const filesToSend = [...attachedFilesData];
             let finalQuery = query;
             if (attachedFilesData.length > 0) {
-                finalQuery += "\\n\\n--- ATTACHED CONTEXT ---\\n";
-                attachedFilesData.forEach(f => {
-                    finalQuery += `File: ${f.name}\\n${f.content}\\n\\n`;
-                });
                 attachedFilesData = [];
                 updateAttachedUI();
             }
@@ -964,3 +960,4 @@ renderSessionList();
     </script>
 </body>
 </html>
+
