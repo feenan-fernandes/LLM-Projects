@@ -10,14 +10,14 @@
   <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License">
 </p>
 
-# Swarm IDE (V2)
+# Swarm IDE
 
 **An absolutely air-gapped, auto-healing developer environment.** Swarm IDE ditches cloud APIs entirely, running a customized micro-swarm of local agents over Ollama. When your code crashes, the swarm reads the stack trace, diagnoses the root cause, writes a patch, and validates it inside a local sandbox—all without human intervention.
 
-## 🚀 V2 Architecture Overhaul
+## 🚀 Architecture Overhaul
 The Swarm IDE has been completely rebuilt with a highly performant, decoupled architecture:
 - **React 18 Frontend:** A "No-Build" Babel CDN architecture featuring a slick dark-mode UI with collapsible reasoning blocks, session persistence, and markdown streaming.
-- **Production WSGI Backend:** Flask's development server has been replaced with a hardened **Waitress** deployment bound safely to 127.0.0.1.
+- **Production WSGI Backend:** Flask's development server has been replaced with a hardened **Waitress** deployment bound safely to `127.0.0.1`.
 - **DoS Thread Locking:** Prevents Local LLM Memory Exhaustion (OOM) by strictly locking the autonomous agent loop to a single concurrent background task.
 - **Graceful Cancellation:** Stop a runaway agent loop instantly from the UI via AbortControllers without killing the Python process.
 
@@ -36,9 +36,9 @@ The Swarm IDE has been completely rebuilt with a highly performant, decoupled ar
 
 The Swarm IDE consists of three isolated layers that work in tandem to keep your code functioning without manual intervention:
 
-1. **The Orchestrator:** Powered by deepseek-r1:7b. It receives your prompt and determines whether to write files, search the web, execute bash scripts, or query the RAG database.
-2. **The Micro-Swarm (CRAG):** When the Orchestrator executes a script in the local sandbox and it crashes, the Micro-Swarm intervenes. It skips simple retries and instead parses the full stack trace. A specialized Coder agent (qwen2.5-coder:7b) applies the exact patch needed to fix the syntax or logic error.
-3. **The Memory Module:** When the Micro-Swarm successfully heals a bug, it embeds the (Crash Log + Root Cause + Patch) into a persistent local **ChromaDB** vector database. If the Swarm encounters this error again, it instantly retrieves the memory and solves it on the first attempt.
+1. **The Orchestrator:** Powered by `deepseek-r1:7b`. It receives your prompt and determines whether to write files, search the web, execute bash scripts, or query the RAG database.
+2. **The Micro-Swarm (CRAG):** When the Orchestrator executes a script in the local sandbox and it crashes, the Micro-Swarm intervenes. It skips simple retries and instead parses the full stack trace. A specialized Coder agent (`qwen2.5-coder:7b`) applies the exact patch needed to fix the syntax or logic error.
+3. **The Memory Module:** When the Micro-Swarm successfully heals a bug, it embeds the `(Crash Log + Root Cause + Patch)` into a persistent local **ChromaDB** vector database. If the Swarm encounters this error again, it instantly retrieves the memory and solves it on the first attempt.
 
 ## Quick Start
 
@@ -47,23 +47,23 @@ You need Python 3.10+ and [Ollama](https://ollama.com) installed on your machine
 ### 1. Grab the Weights
 Run the included script to pull the specific local models the swarm relies on:
 
-`ash
+```bash
 # Windows
 pull_models.bat
 
 # Mac / Linux
 sh pull_models.sh
-`
+```
 
 ### 2. Boot the Environment
 Install the lightweight dependencies and start the local server.
 
-`ash
+```bash
 pip install flask chromadb requests waitress duckduckgo-search pandas
 python 6_builder_app.py
-`
+```
 
-> **Note:** The UI runs on port 5000. Access your terminal at http://127.0.0.1:5000. No telemetry is transmitted off your machine.
+> **Note:** The UI runs on port 5000. Access your terminal at `http://127.0.0.1:5000`. No telemetry is transmitted off your machine.
 
 ---
 
