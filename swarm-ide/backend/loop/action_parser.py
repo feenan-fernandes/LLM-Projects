@@ -155,7 +155,6 @@ def parse_action(xml_text):
     if m_html:
         return {'type': 'write_file', 'args': {'path': 'index.html', 'content': m_html.group(1).strip()}}
 
-    import re
     m_worker = re.findall(r'<spawn_worker>\s*<task>(.*?)</task>\s*</spawn_worker>', xml_text, re.DOTALL | re.IGNORECASE)
     if not m_worker:
         m_worker = re.findall(r'<spawn_worker>\s*(.*?)\s*</spawn_worker>', xml_text, re.DOTALL | re.IGNORECASE)
