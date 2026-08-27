@@ -167,7 +167,7 @@ FIX_KEYWORDS = re.compile(
 )
 
 QUESTION_KEYWORDS = re.compile(
-    r"\b(what|how|why|who|where|when|tell me|explain|summarize|describe|what is|can you)\b|\?$",
+    r"\b(what|how|why|who|where|when|which|tell me|explain|summarize|describe|compare|list|can you|can we|will you|should i|is there|are there|do you|give me)\b|\?\$",
     re.IGNORECASE
 )
 
@@ -176,6 +176,6 @@ def classify_task(task: str) -> str:
     task_lower = task.lower().strip()
     if FIX_KEYWORDS.search(task_lower) and "tell me" not in task_lower and "explain" not in task_lower:
         return "fix"
-    if QUESTION_KEYWORDS.search(task_lower) or task_lower.startswith(("what", "how", "why", "tell me", "explain", "summarize")):
+    if QUESTION_KEYWORDS.search(task_lower) or task_lower.startswith(("what", "how", "why", "who", "when", "where", "which", "tell me", "explain", "summarize", "compare", "list", "can ", "will ", "is ", "are ", "do ", "give ")):
         return "knowledge"
     return "build"
