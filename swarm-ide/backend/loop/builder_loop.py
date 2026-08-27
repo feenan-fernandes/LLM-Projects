@@ -168,6 +168,13 @@ def run_builder_loop(
 
         consecutive_invalid = 0
         action_type = action["type"]
+        
+        if action_type == "plan" and "<plan>" in conversation:
+            observation = "ERROR: You already submitted a plan in a previous step! You MUST NOT submit another <plan>. Use <spawn_worker>, <write_file>, <execute_bash>, etc."
+            response_text = re.sub(r'<think>.*?</think>', '', response_text, flags=re.DOTALL).strip()
+            conversation += f"\n\nASSISTANT:\n{response_text}\n\n<observation>\n{observation}\n</observation>\n\nNext action?"
+            _emit({"type": "action", "iteration": iteration, "action": "invalid_plan_loop", "result": observation})
+            continue
         args = action["args"]
         observation = ""
         is_finished = False
@@ -181,7 +188,7 @@ def run_builder_loop(
                     f"Goal: {args['goal']}\n"
                     f"Steps: {args['steps']}\n"
                     f"Acceptance: {args['acceptance_criteria']}\n\n"
-                    f"IMPORTANT: Plan is stored in memory. DO NOT output <plan> again. You must now take the FIRST action using <write_file> or <execute_bash>."
+                    f"IMPORTANT: Plan is stored in memory. DO NOT output <plan> again. You must now take your first action using one of your available tools (e.g. <spawn_worker>, <execute_bash>, <write_file>, etc)."
                 )
 
             # 2. SEARCH GITHUB SKILLS â€” read-only, no approval needed
