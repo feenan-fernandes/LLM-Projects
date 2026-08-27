@@ -338,7 +338,7 @@
                                             >
                                                 <div className="flex flex-col min-w-0 w-full">
                                                     <span className="truncate pr-2">{s.title}</span>
-                                                    {s.metrics && <span className="text-[10px] text-gray-500 truncate mt-0.5">? {s.metrics.peak_tps} t/s | ?? {s.metrics.total_tokens}</span>}
+                                                    {s.metrics && <span className="text-[10px] text-gray-500 truncate mt-0.5">[TPS: {s.metrics.peak_tps} | Tokens: {s.metrics.total_tokens}]</span>}
                                                 </div>
                                                 <button 
                                                     onClick={(e) => deleteSession(e, s.id)}

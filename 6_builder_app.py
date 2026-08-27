@@ -427,7 +427,9 @@ def build():
     history = data.get('history', [])
 
     # Route BEFORE attaching files so document text doesn't pollute keyword matching
-    task_type = "knowledge" if uncensored else classify_task(prompt)
+    task_type = classify_task(prompt)
+    if "<spawn_worker>" in prompt or "sub-agent" in prompt.lower() or "tool" in prompt.lower():
+        task_type = "build"
     target_model = "hermes3:8b" if uncensored else "deepseek-r1:7b"
     
     # Initialize real governance session
