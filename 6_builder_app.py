@@ -777,4 +777,4 @@ def install_skill_route():
 if __name__ == '__main__':
     from waitress import serve
     print('Production WSGI Server active on http://127.0.0.1:5000')
-    serve(app, host='127.0.0.1', port=5000)
+    serve(app, host='127.0.0.1', port=5000, channel_timeout=1200)
