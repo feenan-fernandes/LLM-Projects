@@ -93,6 +93,11 @@ def parse_action(xml_text):
             "args": args,
         }}
 
+    if "<create_ppt" in xml_text:
+        path = _extract(xml_text, "path") or _extract_attr(xml_text, "create_ppt", "path") or "presentation.pptx"
+        content = _extract(xml_text, "content") or ""
+        return {"type": "create_ppt", "args": {"path": path, "content": content}}
+
     if "<write_file" in xml_text:
         path = _extract(xml_text, "path") or _extract_attr(xml_text, "write_file", "path") or ""
         content = _extract(xml_text, "content") or _extract_attr(xml_text, "write_file", "content") or ""
@@ -145,6 +150,10 @@ def parse_action(xml_text):
     m_python = re.search(r'```python\n?(.*?)\n?```', xml_text, re.DOTALL | re.IGNORECASE)
     if m_python:
         return {"type": "write_file", "args": {"path": "scratch.py", "content": m_python.group(1).strip()}}
+
+    m_html = re.search(r'`(?:html|wireframe|javascript|css|xml|mermaid)\n?(.*?)\n?`', xml_text, re.DOTALL | re.IGNORECASE)
+    if m_html:
+        return {'type': 'write_file', 'args': {'path': 'index.html', 'content': m_html.group(1).strip()}}
 
     stripped_text = xml_text.strip()
     if len(stripped_text) > 20:

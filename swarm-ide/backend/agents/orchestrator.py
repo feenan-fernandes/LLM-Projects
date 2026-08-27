@@ -22,6 +22,22 @@ def call_orchestrator(conversation_context, model=DEFAULT_MODEL, temperature=0.1
         return mock_response, {'prompt_tokens': 0, 'completion_tokens': 0, 'eval_duration': 0}
         
     sys_prompt = system_prompt if system_prompt is not None else load_system_prompt()
+    
+    # Inject dynamic MCP tools if any exist
+    try:
+        from backend.loop.mcp_bridge import get_mcp_bridge
+        workspace_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'workspace'))
+        bridge = get_mcp_bridge(workspace_dir)
+        mcp_tools = bridge.get_tools_sync()
+        if mcp_tools:
+            mcp_docs = "\n\n=== DYNAMIC MCP TOOLS ===\nYou have access to the following external tools via MCP:\n"
+            for t in mcp_tools:
+                mcp_docs += f"Server: {t['server']} | Tool: {t['name']}\nDescription: {t['description']}\nSchema: {t['inputSchema']}\n\n"
+            mcp_docs += "To use an MCP tool, use the following XML format:\n<mcp_call>\n{"server": "<server_name>", "tool": "<tool_name>", "arguments": { ... }}\n</mcp_call>\n"
+            sys_prompt += mcp_docs
+    except Exception as e:
+        print(f"Failed to inject MCP tools: {e}")
+
     full_prompt = f"{sys_prompt}\n\n{conversation_context}"
     
     payload = {
@@ -47,6 +63,22 @@ def call_orchestrator(conversation_context, model=DEFAULT_MODEL, temperature=0.1
 
 def stream_orchestrator(conversation_context, model=DEFAULT_MODEL, temperature=0.1, system_prompt=None, abort_event=None):
     sys_prompt = system_prompt if system_prompt is not None else load_system_prompt()
+    
+    # Inject dynamic MCP tools if any exist
+    try:
+        from backend.loop.mcp_bridge import get_mcp_bridge
+        workspace_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'workspace'))
+        bridge = get_mcp_bridge(workspace_dir)
+        mcp_tools = bridge.get_tools_sync()
+        if mcp_tools:
+            mcp_docs = "\n\n=== DYNAMIC MCP TOOLS ===\nYou have access to the following external tools via MCP:\n"
+            for t in mcp_tools:
+                mcp_docs += f"Server: {t['server']} | Tool: {t['name']}\nDescription: {t['description']}\nSchema: {t['inputSchema']}\n\n"
+            mcp_docs += "To use an MCP tool, use the following XML format:\n<mcp_call>\n{"server": "<server_name>", "tool": "<tool_name>", "arguments": { ... }}\n</mcp_call>\n"
+            sys_prompt += mcp_docs
+    except Exception as e:
+        print(f"Failed to inject MCP tools: {e}")
+
     full_prompt = f"{sys_prompt}\n\n{conversation_context}"
     
     payload = {

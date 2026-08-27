@@ -134,7 +134,10 @@ def run_builder_loop(
             obs = (
             "ERROR: No valid XML action tag found. "
             "You MUST output exactly ONE valid action tag. "
-            "Do NOT just converse. Use <write_file>, <execute_bash>, <patch_file>, or <finish>.\n"
+            "Do NOT just converse. Use <write_file>, <execute_bash>, <patch_file>, <create_ppt> or <finish>.\n"
+            "If the user asks for a PowerPoint or presentation, DO NOT write a python script. ALWAYS use the <create_ppt> tool directly.\n"
+            "If the user asks for a wireframe or UI, use <write_file> to generate an .html file with Tailwind CSS. DO NOT try to write a python UI script.\n"
+            "Example PPTX Tool Call:\n<create_ppt>\n<path>presentation.pptx</path>\n<content>Title Slide\nSubtitle\n---SLIDE---\nSlide 2\nBullet point</content>\n</create_ppt>\n"
             "Example:\n<execute_bash>\n  <command>ls -la</command>\n</execute_bash>"
         )
             log_action(task_id, iteration, "invalid_xml", obs, metrics["completion_tokens"], metrics["eval_duration"] // 1_000_000)
@@ -280,6 +283,33 @@ def run_builder_loop(
                             if err: observation += "\n" + err
                     except Exception as e:
                         observation = f"Error reading/writing {path}: {e}"
+            elif action_type == "create_ppt":
+                path = args.get("path", "presentation.pptx")
+                content = args.get("content", "")
+                
+                workspace_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'workspace'))
+                full_path = os.path.abspath(os.path.join(workspace_dir, path))
+                
+                try:
+                    from pptx import Presentation
+                    prs = Presentation()
+                    # A very basic parser to split content by slides
+                    slides_text = content.split('---SLIDE---')
+                    for slide_txt in slides_text:
+                        if not slide_txt.strip(): continue
+                        slide = prs.slides.add_slide(prs.slide_layouts[1]) # Title & Content layout
+                        lines = [l.strip() for l in slide_txt.strip().split('\n') if l.strip()]
+                        if lines:
+                            slide.shapes.title.text = lines[0]
+                            if len(lines) > 1:
+                                slide.placeholders[1].text = '\n'.join(lines[1:])
+                    
+                    os.makedirs(os.path.dirname(full_path), exist_ok=True)
+                    prs.save(full_path)
+                    observation = f"PowerPoint created natively: {path}"
+                except Exception as e:
+                    observation = f"Error generating PPTX: {e}"
+
             elif action_type == "write_file":
                 path = args.get("path", "")
                 content = args.get("content", "")
@@ -346,6 +376,18 @@ def run_builder_loop(
                         observation = "No results found for query."
                 except Exception as e:
                     observation = f"Web search failed: {e}"
+
+            elif action_type == "mcp_call":
+                try:
+                    from backend.loop.mcp_bridge import get_mcp_bridge
+                    workspace_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'workspace'))
+                    bridge = get_mcp_bridge(workspace_dir)
+                    server = args.get("server", "unknown")
+                    tool = args.get("tool", "unknown")
+                    arguments = args.get("arguments", {})
+                    observation = bridge.call_tool_sync(server, tool, arguments)
+                except Exception as e:
+                    observation = f"MCP call failed: {e}"
 
             elif action_type == "execute_bash":
                 cmd = args.get("command", "")
