@@ -27,6 +27,15 @@ def _observation_prefix(action_type, iteration):
     return f"[iter {iteration}] {action_type.upper()} result"
 
 
+import py_compile
+def validate_file(path):
+    if not path.endswith('.py'): return None
+    try:
+        py_compile.compile(path, doraise=True)
+        return None
+    except Exception as e:
+        return "Syntax Error in file: " + str(e)
+
 def _human_approval_pending(action):
     """Returns an ArtifactCard-style dict the caller must surface to the user."""
     return {

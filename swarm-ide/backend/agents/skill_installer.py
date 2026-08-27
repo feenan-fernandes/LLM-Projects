@@ -38,7 +38,10 @@ def install_skill(candidate, task_id="system", log_fn=None):
     Returns:
         str: path to the installed SKILL.md file.
     """
-    slug = candidate["slug"]
+    import werkzeug.utils
+    slug = werkzeug.utils.secure_filename(candidate["slug"])
+    if not slug:
+        raise ValueError("Invalid skill slug.")
     skill_md = candidate.get("skill_md", "")
 
     if not skill_md:

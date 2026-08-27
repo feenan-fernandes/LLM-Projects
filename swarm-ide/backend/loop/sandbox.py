@@ -120,14 +120,7 @@ def execute_command_safely(
                 timeout=timeout,
             )
         else:
-            result = subprocess.run(
-                cmd,
-                shell=True,
-                cwd=run_cwd,
-                capture_output=True,
-                text=True,
-                timeout=timeout,
-            )
+            raise SandboxViolationError("CRITICAL: Docker is not available. Native host execution is disabled for security to prevent RCE. Please start Docker Desktop.")
             
         latency_ms = int((time.monotonic() - t0) * 1000)
         success = result.returncode == 0
