@@ -250,8 +250,9 @@
                                 if (chunk.type === 'stream' && chunk.chunk) {
                                     setHistory(prev => {
                                         const newHistory = [...prev];
-                                        const lastMsg = newHistory[newHistory.length - 1];
+                                        const lastMsg = { ...newHistory[newHistory.length - 1] };
                                         lastMsg.content += chunk.chunk;
+                                        newHistory[newHistory.length - 1] = lastMsg;
                                         return newHistory;
                                     });
                                 } else if (chunk.type === 'action') {

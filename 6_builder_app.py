@@ -427,7 +427,7 @@ def build():
     history = data.get('history', [])
 
     # Route BEFORE attaching files so document text doesn't pollute keyword matching
-    task_type = classify_task(prompt)
+    task_type = "knowledge" if uncensored else classify_task(prompt)
     target_model = "hermes3:8b" if uncensored else "deepseek-r1:7b"
     
     # Initialize real governance session
@@ -500,12 +500,7 @@ def build():
                             f"User: {prompt}"
                         )
             
-                        q.put({
-                            "type": "action", "iteration": 1, "action": "think", 
-                            "thought": f"I need to analyze the user's query and the provided document using {target_model}.",
-                            "result": "Analyzing knowledge query and document context...",
-                            "metrics": {'prompt_tokens': 0, 'completion_tokens': 0, 'eval_duration': 0}
-                        })
+
                         
                         ans = ""
                         metrics = {}
@@ -521,12 +516,7 @@ def build():
                                     'eval_duration': chunk_data.get('eval_duration', 1)
                                 }
                         
-                        q.put({
-                            "type": "action", "iteration": 1, "action": "answer",
-                            "thought": "I have completed the response.",
-                            "result": "(Response streamed above)",
-                            "metrics": metrics
-                        })
+
                         
                         try:
                             import sys, os, time
