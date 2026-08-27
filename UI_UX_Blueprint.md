@@ -1,18 +1,14 @@
 ﻿# Swarm IDE: Modern UI/UX Architecture Blueprint
 
-As an AI Pentester and System Design Expert, I have evaluated the current frontend implementation (	emplates/index.html). Currently, it relies on a monolithic Vanilla JavaScript script coupled directly to Flask Jinja templates. While functional, it suffers from state-management brittleness (e.g., Base64 strings polluting prompt contexts, race conditions in streaming, and a lack of proper session compartmentalization).
-
-To elevate Swarm IDE to the standard of **Hermes**, **Perplexity**, or **Antigravity 2.0**, the frontend must be decoupled and modernized. Even for a completely local, air-gapped tool, the UI must feel instantly responsive, spatially aware, and transparent about agent actions.
-
-Here is the architectural and design blueprint for a V2 UI.
-
 ---
 
 ## 1. Core Technology Stack
 - **Framework:** React 18+ (via Vite) or Vue 3. 
 - **Styling:** TailwindCSS for utility-first, highly responsive design with deep Dark Mode support (#0d1117 GitHub dark palette).
 - **State Management:** Zustand (React) or Pinia (Vue) for tracking streaming states, active agents, and sandbox health without prop-drilling.
-- **Markdown & Syntax:** eact-markdown + emark-gfm + highlight.js (for rendering agent code outputs with one-click "Copy" or "Apply to File" buttons).
+- **Markdown & Syntax:** 
+eact-markdown + 
+emark-gfm + highlight.js (for rendering agent code outputs with one-click "Copy" or "Apply to File" buttons).
 
 ## 2. Spatial Layout & Layout Geometry
 A modern AI IDE requires a 3-pane layout to balance chat with context:
@@ -49,7 +45,6 @@ When the agent outputs an XML tool call like <execute_bash><command>npm test</co
     <button>View Output</button>
   </div>
   `
-This is exactly how Antigravity handles hidden bash commands, reducing cognitive load.
 
 ### C. State-Aware Loading States
 Instead of a generic spinner, the UI should use Server-Sent Events (SSE) to display exactly what the agent loop is doing:
@@ -59,7 +54,8 @@ Instead of a generic spinner, the UI should use Server-Sent Events (SSE) to disp
 - *Testing fixes...*
 
 ## 4. Implementation Steps (Migration Path)
-1. **API Decoupling:** Move 6_builder_app.py entirely to JSON REST / SSE endpoints. Remove ender_template('index.html').
+1. **API Decoupling:** Move 6_builder_app.py entirely to JSON REST / SSE endpoints. Remove 
+ender_template('index.html').
 2. **Initialize Vite:** Run 
 pm create vite@latest frontend -- --template react-ts.
 3. **Build the Chat Component:** Implement the custom Markdown renderer that intercepts <think> and <execute_bash> tags to render rich UI components instead of raw text.
