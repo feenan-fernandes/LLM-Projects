@@ -430,7 +430,9 @@ def build():
     task_type = classify_task(prompt)
     if "<spawn_worker>" in prompt or "sub-agent" in prompt.lower() or "tool" in prompt.lower():
         task_type = "build"
-    target_model = "hermes3:8b" if uncensored else "deepseek-r1:7b"
+    target_model = data.get('model', 'qwen2.5-coder:latest')
+    if uncensored and not data.get('model'):
+        target_model = "hermes3:8b"
     
     # Initialize real governance session
     import governance_logger

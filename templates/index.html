@@ -102,6 +102,7 @@
             const [isStreaming, setIsStreaming] = useState(false);
             const [abortController, setAbortController] = useState(null);
                         const [uncensored, setUncensored] = useState(false);
+            const [selectedModel, setSelectedModel] = useState('qwen2.5-coder:latest');
             const [showGovernance, setShowGovernance] = useState(false);
             const [govData, setGovData] = useState(null);
 
@@ -314,6 +315,19 @@
                         <div className="flex-1 overflow-y-auto flex flex-col">
                             <div className="p-4">
                                 <div className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-3">Settings</div>
+                                <div className="mb-4">
+                                    <label className="block text-xs text-gray-400 mb-1">Model</label>
+                                    <select 
+                                        value={selectedModel}
+                                        onChange={(e) => setSelectedModel(e.target.value)}
+                                        className="w-full bg-gray-800 border border-gray-700 text-sm rounded px-2 py-1 text-white focus:outline-none focus:border-blue-500"
+                                    >
+                                        <option value="qwen2.5-coder:latest">Qwen2.5-Coder (7B)</option>
+                                        <option value="llama3.1:8b">Llama-3.1 (8B)</option>
+                                        <option value="deepseek-r1:7b">DeepSeek-R1 (7B)</option>
+                                        <option value="hermes3:8b">Hermes-3 (8B)</option>
+                                    </select>
+                                </div>
                                 <label className="flex items-center gap-2 text-sm cursor-pointer hover:text-white transition">
                                     <input type="checkbox" checked={uncensored} onChange={(e) => setUncensored(e.target.checked)} className="accent-red-500" />
                                     Heretic Mode (Uncensored)

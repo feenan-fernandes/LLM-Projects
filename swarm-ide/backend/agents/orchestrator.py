@@ -3,7 +3,7 @@ import requests
 import os
 
 OLLAMA_URL = "http://127.0.0.1:11434/api/generate"
-DEFAULT_MODEL = "deepseek-r1:7b"
+DEFAULT_MODEL = "qwen2.5-coder:latest"
 
 def load_system_prompt():
     prompt_path = os.path.join(os.path.dirname(__file__), '..', 'prompts', 'orchestrator_system_prompt.txt')

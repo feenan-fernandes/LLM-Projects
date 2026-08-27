@@ -15,7 +15,7 @@ You MUST output exactly ONE XML block named <working_memory> containing:
 Do NOT output <think> tags. Do NOT output markdown. Only output the raw <working_memory> XML.
 """
 
-def compact_trajectory(conversation_context, model="deepseek-r1:7b"):
+def compact_trajectory(conversation_context, model="llama3.1:8b"):
     \"\"\"
     Takes a long conversation string and returns a compressed <working_memory> block.
     \"\"\"
