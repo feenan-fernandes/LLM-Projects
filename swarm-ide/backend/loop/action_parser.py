@@ -155,6 +155,15 @@ def parse_action(xml_text):
     if m_html:
         return {'type': 'write_file', 'args': {'path': 'index.html', 'content': m_html.group(1).strip()}}
 
+    import re
+    m_worker = re.findall(r'<spawn_worker>\s*<task>(.*?)</task>\s*</spawn_worker>', xml_text, re.DOTALL | re.IGNORECASE)
+    if not m_worker:
+        m_worker = re.findall(r'<spawn_worker>\s*(.*?)\s*</spawn_worker>', xml_text, re.DOTALL | re.IGNORECASE)
+    if m_worker:
+        tasks = [t.strip() for t in m_worker if t.strip()]
+        if tasks:
+            return {"type": "spawn_worker", "args": {"tasks": tasks}}
+
     stripped_text = xml_text.strip()
     if len(stripped_text) > 20:
         return {"type": "finish", "args": {"summary": stripped_text}}
