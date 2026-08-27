@@ -161,8 +161,8 @@ def run_builder_loop(
             "Example:\n<execute_bash>\n  <command>ls -la</command>\n</execute_bash>"
         )
             log_action(task_id, iteration, "invalid_xml", obs, metrics["completion_tokens"], metrics["eval_duration"] // 1_000_000)
-            response_text = re.sub(r'<think>.*?</think>', '', response_text, flags=re.DOTALL).strip()
-            conversation += f"\n\nASSISTANT:\n{response_text}\n\n<observation>\n{obs}\n</observation>\n\nNext action?"
+            # Do not append hallucinated garbage to context, it causes 7B models to spiral
+            conversation += f"\n\nSYSTEM OBSERVATION:\n{obs}\nDo not repeat the invalid output. Next action?"
             _emit({"type": "action", "iteration": iteration, "action": "invalid_xml", "result": obs})
             continue
 
@@ -171,8 +171,8 @@ def run_builder_loop(
         
         if action_type == "plan" and "<plan>" in conversation:
             observation = "ERROR: You already submitted a plan in a previous step! You MUST NOT submit another <plan>. Use <spawn_worker>, <write_file>, <execute_bash>, etc."
-            response_text = re.sub(r'<think>.*?</think>', '', response_text, flags=re.DOTALL).strip()
-            conversation += f"\n\nASSISTANT:\n{response_text}\n\n<observation>\n{observation}\n</observation>\n\nNext action?"
+            # Do not append hallucinated plan repetition to context
+            conversation += f"\n\nSYSTEM OBSERVATION:\n{observation}\nDo not repeat the plan. Take action."
             _emit({"type": "action", "iteration": iteration, "action": "invalid_plan_loop", "result": observation})
             continue
         args = action["args"]
