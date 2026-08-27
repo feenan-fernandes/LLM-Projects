@@ -255,6 +255,15 @@
                                         newHistory[newHistory.length - 1] = lastMsg;
                                         return newHistory;
                                     });
+                                } else if (chunk.type === 'finish') {
+                                    setSessions(prev => {
+                                        const newSessions = [...prev];
+                                        const idx = newSessions.findIndex(s => s.id === currentSessionId);
+                                        if (idx !== -1 && chunk.metrics) {
+                                            newSessions[idx].metrics = chunk.metrics;
+                                        }
+                                        return newSessions;
+                                    });
                                 } else if (chunk.type === 'action') {
                                     setHistory(prev => {
                                         const newHistory = [...prev];
@@ -327,7 +336,10 @@
                                                 onClick={() => loadSession(s)}
                                                 className={`group flex items-center justify-between text-sm cursor-pointer py-1.5 px-2 rounded ${currentSessionId === s.id ? 'bg-blue-600/20 text-blue-400' : 'hover:bg-gray-700 text-gray-400 hover:text-white'}`}
                                             >
-                                                <span className="truncate pr-2">{s.title}</span>
+                                                <div className="flex flex-col min-w-0 w-full">
+                                                    <span className="truncate pr-2">{s.title}</span>
+                                                    {s.metrics && <span className="text-[10px] text-gray-500 truncate mt-0.5">? {s.metrics.peak_tps} t/s | ?? {s.metrics.total_tokens}</span>}
+                                                </div>
                                                 <button 
                                                     onClick={(e) => deleteSession(e, s.id)}
                                                     className="text-gray-500 hover:text-red-400 text-lg leading-none px-1 rounded hover:bg-red-400/10 transition flex-shrink-0"

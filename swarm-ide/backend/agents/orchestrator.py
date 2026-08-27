@@ -38,6 +38,10 @@ def call_orchestrator(conversation_context, model=DEFAULT_MODEL, temperature=0.1
     except Exception as e:
         print(f"Failed to inject MCP tools: {e}")
 
+    # Inject sub-agent tool
+    sys_prompt += "\n\n=== SUB-AGENTS ===\nYou can delegate parallel research or isolated tasks to sub-agents. They will run in parallel and return their results.\n<spawn_worker>\n  <task>Read file X and summarize the functions</task>\n</spawn_worker>\nYou can output multiple <spawn_worker> blocks in a single response to spawn multiple parallel agents!\n"
+
+
     full_prompt = f"{sys_prompt}\n\n{conversation_context}"
     
     payload = {
@@ -78,6 +82,10 @@ def stream_orchestrator(conversation_context, model=DEFAULT_MODEL, temperature=0
             sys_prompt += mcp_docs
     except Exception as e:
         print(f"Failed to inject MCP tools: {e}")
+
+    # Inject sub-agent tool
+    sys_prompt += "\n\n=== SUB-AGENTS ===\nYou can delegate parallel research or isolated tasks to sub-agents. They will run in parallel and return their results.\n<spawn_worker>\n  <task>Read file X and summarize the functions</task>\n</spawn_worker>\nYou can output multiple <spawn_worker> blocks in a single response to spawn multiple parallel agents!\n"
+
 
     full_prompt = f"{sys_prompt}\n\n{conversation_context}"
     

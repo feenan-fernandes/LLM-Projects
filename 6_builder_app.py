@@ -535,17 +535,23 @@ def build():
                         iters = 1
                         summary = ans
                         
-                        append_entry(task_id, prompt[:120], 'success', summary, iters)
+                        tps = 0.0
+                        tot_toks = metrics.get('prompt_tokens', 0) + metrics.get('completion_tokens', 0)
+                        if metrics.get('eval_duration', 0) > 0:
+                            tps = metrics.get('completion_tokens', 0) / (metrics.get('eval_duration') / 1e9)
+                        
+                        append_entry(task_id, prompt[:120], 'success', summary, iters, tot_toks)
                         governance_logger.end_session(task_id, 'SUCCESS')
                         q.put({
                             'type': 'finish',
                             'status': 'success',
                             'summary': summary,
                             'iterations': iters,
-                            'task_type': task_type
+                            'task_type': task_type,
+                            'metrics': {'total_tokens': tot_toks, 'peak_tps': round(tps, 2)}
                         })
                     else:
-                        success, iters, summary = run_builder_loop(
+                        success, iters, summary, tot_toks, max_tps = run_builder_loop(
                             prompt,
                             task_id=task_id,
                             history=history,
@@ -554,13 +560,14 @@ def build():
                             model=target_model,
                             system_prompt=custom_sys, abort_event=abort_evt
                         )
-                        append_entry(task_id, prompt[:120], 'success' if success else 'failed', summary, iters)
+                        append_entry(task_id, prompt[:120], 'success' if success else 'failed', summary, iters, tot_toks)
                         q.put({
                             'type': 'finish',
                             'status': 'success' if success else 'failed',
                             'summary': summary,
                             'iterations': iters,
                             'task_type': task_type,
+                            'metrics': {'total_tokens': tot_toks, 'peak_tps': round(max_tps, 2)}
                         })
                 except Exception as e:
                     q.put({

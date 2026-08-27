@@ -87,6 +87,8 @@ def run_builder_loop(
     tests_passed = False
     final_summary = ""
     consecutive_invalid = 0
+    total_tokens = 0
+    max_tps = 0.0
 
     def _emit(event):
         if stream_callback:
@@ -113,6 +115,14 @@ def run_builder_loop(
         # --- Call Orchestrator (or use mock) ---
         mock = mock_responses[i] if mock_responses and i < len(mock_responses) else None
         response_text, metrics = call_orchestrator(conversation, model=model, mock_response=mock, system_prompt=system_prompt)
+        
+        c_tokens = metrics.get('completion_tokens', 0)
+        e_dur = metrics.get('eval_duration', 1) / 1e9
+        total_tokens += c_tokens
+        if e_dur > 0:
+            tps = c_tokens / e_dur
+            if tps > max_tps:
+                max_tps = tps
 
         thought = extract_thought(response_text)
         action = parse_action(response_text)
@@ -398,6 +408,29 @@ def run_builder_loop(
                     observation = bridge.call_tool_sync(server, tool, arguments)
                 except Exception as e:
                     observation = f"MCP call failed: {e}"
+
+            elif action_type == "spawn_worker":
+                tasks = args.get("tasks", [])
+                import concurrent.futures
+                from backend.agents.orchestrator import call_orchestrator
+                
+                def _run_subtask(idx, t):
+                    _emit({"type": "system", "msg": f"Sub-Agent {idx+1} spawned: {t[:30]}..."})
+                    prompt = f"You are a fast Swarm Sub-Agent. Your isolated task is: {t}\nReturn a thorough but concise answer."
+                    try:
+                        res, _ = call_orchestrator(prompt, model="deepseek-r1:7b")
+                        return f"--- Sub-Agent {idx+1} Result ---\n{res}\n"
+                    except Exception as e:
+                        return f"--- Sub-Agent {idx+1} Failed ---\n{e}\n"
+                
+                with concurrent.futures.ThreadPoolExecutor(max_workers=min(4, len(tasks))) as executor:
+                    futures = []
+                    for idx, t in enumerate(tasks):
+                        futures.append(executor.submit(_run_subtask, idx, t))
+                    results = [f.result() for f in futures]
+                
+                observation = "Sub-agents completed their parallel tasks:\n\n" + "\n".join(results)
+                _emit({"type": "system", "msg": f"All {len(tasks)} sub-agents completed."})
 
             elif action_type == "execute_bash":
                 cmd = args.get("command", "")
