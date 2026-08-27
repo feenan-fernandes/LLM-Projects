@@ -107,7 +107,7 @@ def run_builder_loop(
 
         if abort_event and abort_event.is_set():
             _emit({"type": "action", "iteration": iteration, "action": "abort", "result": "Task aborted by user."})
-            return False, iteration, "Aborted by user"
+            return False, iteration, "Aborted by user", total_tokens, max_tps
 
         i = iteration - 1
         _emit({"type": "system", "msg": f"Step {iteration}: Agent is thinking..."})
@@ -139,7 +139,7 @@ def run_builder_loop(
             if consecutive_invalid >= 3:
                 summary = "Failed: 3 consecutive invalid XML actions."
                 _emit({"type": "action", "iteration": iteration, "action": "invalid_xml", "result": summary})
-                return False, iteration, summary
+                return False, iteration, summary, total_tokens, max_tps
 
             # Partial check at iter 6
             if iteration >= PARTIAL_THRESHOLD and not tests_passed:
@@ -149,7 +149,7 @@ def run_builder_loop(
                 )
                 log_action(task_id, iteration, "partial_flag", summary, 0, 0)
                 _emit({"type": "action", "iteration": iteration, "action": "partial_flag", "result": summary})
-                return False, iteration, summary
+                return False, iteration, summary, total_tokens, max_tps
 
             obs = (
             "ERROR: No valid XML action tag found. "
@@ -412,7 +412,6 @@ def run_builder_loop(
             elif action_type == "spawn_worker":
                 tasks = args.get("tasks", [])
                 import concurrent.futures
-                from backend.agents.orchestrator import call_orchestrator
                 
                 def _run_subtask(idx, t):
                     _emit({"type": "system", "msg": f"Sub-Agent {idx+1} spawned: {t[:30]}..."})
@@ -464,7 +463,7 @@ def run_builder_loop(
                     )
                     log_action(task_id, iteration, "partial_flag", summary, 0, 0)
                     _emit({"type": "action", "iteration": iteration, "action": "partial_flag", "result": summary})
-                    return False, iteration, summary
+                    return False, iteration, summary, total_tokens, max_tps
 
             # 9. SELF HEAL â€” delegate to Tester
             elif action_type == "self_heal":
@@ -509,7 +508,7 @@ def run_builder_loop(
 
         if is_finished:
             success = action["args"].get("status", "success") == "success"
-            return success, iteration, final_summary
+            return success, iteration, final_summary, total_tokens, max_tps
 
         # Append observation to conversation
         response_text = re.sub(r'<think>.*?</think>', '', response_text, flags=re.DOTALL).strip()
@@ -521,5 +520,5 @@ def run_builder_loop(
 
     # Iteration budget exhausted
     log_action(task_id, MAX_ITERATIONS, "timeout", "Iteration budget (8) exhausted.", 0, 0)
-    return False, MAX_ITERATIONS, "Failed: iteration budget exhausted."
+    return False, MAX_ITERATIONS, "Failed: iteration budget exhausted.", total_tokens, max_tps
 
