@@ -123,17 +123,18 @@ def search_skills(task_description: str, max_candidates: int = 5, mock_results=N
                 "librarian_approved": False,
             }
 
-    # Strategy 1: topic search
-    for topic in SKILL_TOPICS:
-        url = f"{GITHUB_API_BASE}/search/repositories?q=topic:{topic}&sort=stars&order=desc&per_page=10"
-        data = _get(url)
-        if data:
-            for item in data.get("items", []):
-                _add(item)
-        time.sleep(0.3)
-
-    # Strategy 2: code search for SKILL.md files
-    code_data = _get(f"{GITHUB_API_BASE}/search/code?q=filename:SKILL.md&sort=indexed&per_page=15")
+    # Strategy 1: Dynamic query search
+    query = urllib.parse.quote(task_description)
+    # Search for repositories matching the query
+    url = f"{GITHUB_API_BASE}/search/repositories?q={query}&sort=stars&order=desc&per_page=10"
+    data = _get(url)
+    if data:
+        for item in data.get("items", []):
+            _add(item)
+            
+    # Strategy 2: Restrict to SKILL.md files matching the query
+    code_url = f"{GITHUB_API_BASE}/search/code?q={query}+filename:SKILL.md&sort=indexed&per_page=5"
+    code_data = _get(code_url)
     if code_data:
         for item in code_data.get("items", []):
             _add(item, repo=item.get("repository", {}))

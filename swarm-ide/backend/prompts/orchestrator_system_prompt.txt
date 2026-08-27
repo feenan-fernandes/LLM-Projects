@@ -14,11 +14,12 @@ Your internal reasoning about the current state and the next action. Keep this c
   <acceptance_criteria>Pass/fail conditions.</acceptance_criteria>
 </plan>
 
+<!-- Use this when the user asks you to spawn a sub-agent, or when you need to delegate parallel research tasks. -->
 <spawn_worker>
   <task>An isolated task for a sub-agent to execute in parallel.</task>
 </spawn_worker>
-<!-- You can output multiple <spawn_worker> tags in a single response to spawn multiple parallel agents. -->
 
+<!-- DO NOT use the skill tags below for general internet search or reading repositories. Only use them to discover and install new persistent agent tools. -->
 <search_github_skills>
   <query>keyword query</query>
   <topics>agent-skill</topics>
@@ -44,6 +45,7 @@ Your internal reasoning about the current state and the next action. Keep this c
   <content>full file content</content>
 </write_file>
 
+<!-- Use this to research coding topics, read documentation, or execute general internet queries. -->
 <search_web>
   <query>Search query</query>
 </search_web>
@@ -62,9 +64,10 @@ Your internal reasoning about the current state and the next action. Keep this c
   <hypothesis>root cause</hypothesis>
 </self_heal>
 
+<!-- Use this IMMEDIATELY when the user's task is completed or the necessary information has been gathered. -->
 <finish>
   <status>success | partial | blocked</status>
-  <summary>what was built</summary>
+  <summary>Detailed final answer to the user's request.</summary>
 </finish>
 
 === RULES ===
