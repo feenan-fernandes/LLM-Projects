@@ -33,7 +33,7 @@ def call_orchestrator(conversation_context, model=DEFAULT_MODEL, temperature=0.1
             mcp_docs = "\n\n=== DYNAMIC MCP TOOLS ===\nYou have access to the following external tools via MCP:\n"
             for t in mcp_tools:
                 mcp_docs += f"Server: {t['server']} | Tool: {t['name']}\nDescription: {t['description']}\nSchema: {t['inputSchema']}\n\n"
-            mcp_docs += "To use an MCP tool, use the following XML format:\n<mcp_call>\n{"server": "<server_name>", "tool": "<tool_name>", "arguments": { ... }}\n</mcp_call>\n"
+            mcp_docs += "To use an MCP tool, use the following XML format:\n<mcp_call>\n{\"server\": \"<server_name>\", \"tool\": \"<tool_name>\", \"arguments\": { ... }}\n</mcp_call>\n"
             sys_prompt += mcp_docs
     except Exception as e:
         print(f"Failed to inject MCP tools: {e}")
@@ -78,7 +78,7 @@ def stream_orchestrator(conversation_context, model=DEFAULT_MODEL, temperature=0
             mcp_docs = "\n\n=== DYNAMIC MCP TOOLS ===\nYou have access to the following external tools via MCP:\n"
             for t in mcp_tools:
                 mcp_docs += f"Server: {t['server']} | Tool: {t['name']}\nDescription: {t['description']}\nSchema: {t['inputSchema']}\n\n"
-            mcp_docs += "To use an MCP tool, use the following XML format:\n<mcp_call>\n{"server": "<server_name>", "tool": "<tool_name>", "arguments": { ... }}\n</mcp_call>\n"
+            mcp_docs += "To use an MCP tool, use the following XML format:\n<mcp_call>\n{\"server\": \"<server_name>\", \"tool\": \"<tool_name>\", \"arguments\": { ... }}\n</mcp_call>\n"
             sys_prompt += mcp_docs
     except Exception as e:
         print(f"Failed to inject MCP tools: {e}")
