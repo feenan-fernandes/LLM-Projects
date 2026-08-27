@@ -93,6 +93,16 @@ def run_builder_loop(
             stream_callback(event)
 
     for iteration in range(1, MAX_ITERATIONS + 1):
+        if iteration > 1 and iteration % 6 == 0:
+            _emit({"type": "system", "msg": f"Step {iteration}: Context window large. Running Auto-Compaction..."})
+            try:
+                from backend.agents.compactor import compact_trajectory, apply_compaction
+                mem_block = compact_trajectory(conversation, model=model)
+                conversation = apply_compaction(conversation, mem_block, keep_last_n_turns=2)
+                _emit({"type": "action", "iteration": iteration, "action": "memory_compaction", "result": "Context window limits approached.\nTrajectory successfully compressed into <working_memory> block."})
+            except Exception as e:
+                _emit({"type": "system", "msg": f"Auto-Compaction failed: {e}"})
+
         if abort_event and abort_event.is_set():
             _emit({"type": "action", "iteration": iteration, "action": "abort", "result": "Task aborted by user."})
             return False, iteration, "Aborted by user"
