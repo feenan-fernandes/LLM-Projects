@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Swarm IDE</title>
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/static/js/tailwindcss.js"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -20,12 +20,12 @@
         }
     </script>
     <!-- React & ReactDOM -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="/static/js/react.development.js"></script>
+    <script src="/static/js/react-dom.development.js"></script>
     <!-- Babel for in-browser JSX -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="/static/js/babel.min.js"></script>
     <!-- Marked.js -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="/static/js/marked.min.js"></script>
     <style>
         body { background-color: #0d1117; color: #c9d1d9; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; overflow: hidden; }
         .markdown p { margin-bottom: 0.75rem; }
@@ -258,7 +258,7 @@
                                     setHistory(prev => {
                                         const newHistory = [...prev];
                                         const lastMsg = newHistory[newHistory.length - 1];
-                                        lastMsg.content += `\n\n> **[SYSTEM OBS]** ${chunk.action}: \n> \`\`\`\n> ${chunk.result}\n> \`\`\`\n\n`;
+                                        lastMsg.content += `\n\n> **[OVERLORD]** ${chunk.action}: \n> \`\`\`\n> ${chunk.result}\n> \`\`\`\n\n`;
                                         return newHistory;
                                     });
                                 }
