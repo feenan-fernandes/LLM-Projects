@@ -143,6 +143,28 @@ def parse_action(xml_text):
             summary = m.group(1).strip() if m else ""
         return {"type": "finish", "args": {"status": status, "summary": summary}}
 
+
+    if "<search_web>" in xml_text:
+        return {"type": "search_web", "args": {
+            "query": _extract(xml_text, "query") or ""
+        }}
+
+    if "<ask_user>" in xml_text:
+        return {"type": "ask_user", "args": {
+            "question": _extract(xml_text, "question") or ""
+        }}
+
+    if "<search_rag>" in xml_text:
+        return {"type": "search_rag", "args": {
+            "index_name": _extract(xml_text, "index_name") or "",
+            "query": _extract(xml_text, "query") or ""
+        }}
+
+    if "<search_web>" in xml_text:
+        return {"type": "search_web", "args": {
+            "query": _extract(xml_text, "query") or ""
+        }}
+
     m_bash = re.search(r'```bash\n?(.*?)\n?```', xml_text, re.DOTALL | re.IGNORECASE)
     if m_bash:
         return {"type": "execute_bash", "args": {"command": m_bash.group(1).strip()}}

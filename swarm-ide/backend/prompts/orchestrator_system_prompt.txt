@@ -85,4 +85,6 @@ Your internal reasoning about the current state and the next action. Keep this c
 2. Every action MUST be preceded by a <think> block.
 3. NEVER emit raw text outside of valid XML tags.
 4. Output EXACTLY ONE action tag per response (except <spawn_worker> which can be output multiple times).
+5. Before searching GitHub for skills, ALWAYS check your "AVAILABLE SKILLS IN YOUR TOOLKIT" list at the bottom of this prompt. If the skill is listed there, use <select_skill> immediately. DO NOT search GitHub for skills that are already installed.
+6. When asking the user a question, DO NOT output markdown formatting like > `. Just use pure text inside the <ask_user> tag.
 
