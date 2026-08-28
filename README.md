@@ -1,7 +1,7 @@
-﻿<div align="left">
-  <a href="./README.md" style="padding: 10px; border-bottom: 2px solid #58a6ff; text-decoration: none; color: #c9d1d9; font-weight: bold;">📖 README</a>
+<div align="left">
+  <a href="./README.md" style="padding: 10px; border-bottom: 2px solid #58a6ff; text-decoration: none; color: #c9d1d9; font-weight: bold;">?? README</a>
   &nbsp;&nbsp;&nbsp;
-  <a href="./SUPPORT.md" style="padding: 10px; border-bottom: 2px solid transparent; text-decoration: none; color: #8b949e; font-weight: bold;">🚑 SUPPORT / GUIDE</a>
+  <a href="./SUPPORT.md" style="padding: 10px; border-bottom: 2px solid transparent; text-decoration: none; color: #8b949e; font-weight: bold;">?? SUPPORT / GUIDE</a>
 </div>
 <br>
 <p align="center">
@@ -14,7 +14,7 @@
 
 **An absolutely air-gapped, auto-healing developer environment.** Swarm IDE ditches cloud APIs entirely, running a customized micro-swarm of local agents over Ollama. When your code crashes, the swarm reads the stack trace, diagnoses the root cause, writes a patch, and validates it inside a local sandbox - all without human intervention.
 
-## 🧠 System Architecture
+## ?? System Architecture
 
 The Swarm IDE consists of highly specialized, decoupled layers that work in tandem to keep your code functioning without manual intervention:
 
@@ -23,7 +23,7 @@ The Swarm IDE consists of highly specialized, decoupled layers that work in tand
 3. **The Memory Module:** When the Micro-Swarm successfully heals a bug, it embeds the (Crash Log + Root Cause + Patch) into a persistent local **ChromaDB** vector database. If the Swarm encounters this error again, it instantly retrieves the memory and solves it on the first attempt.
 4. **Hardened Backend Deployment:** The server utilizes a production-ready **Waitress** WSGI deployment safely bound to 127.0.0.1. It features strict DoS thread locking to prevent Local LLM Memory Exhaustion (OOM) by locking the autonomous agent loop to a single concurrent background task.
 
-## ⚡ Core Capabilities
+## ? Core Capabilities
 
 <table>
 <tr><td><b>71+ Design Skill Contracts</b></td><td>The Swarm is pre-loaded with over 71 specialized UI/UX design frameworks natively integrated into the workspace (including <i>Taste Skill</i>, <i>Impeccable</i>, <i>Shadcn</i>, <i>Bento</i>, and the full <i>Awesome Design</i> library). The AI automatically enforces these design constraints to prevent generic, templated UI generation.</td></tr>
@@ -34,7 +34,7 @@ The Swarm IDE consists of highly specialized, decoupled layers that work in tand
 <tr><td><b>AI Governance Dashboard</b></td><td>Monitor execution boundaries, thrashing rates, and token burn in real-time. Includes a built-in SQLite dashboard to track total autonomous actions and Heretic Mode invocations.</td></tr>
 </table>
 
-## 🚀 Quick Start
+## ?? Quick Start
 
 You need Python 3.10+ and [Ollama](https://ollama.com) installed on your machine. 
 
