@@ -12,58 +12,57 @@
 
 # Swarm IDE
 
-**An absolutely air-gapped, auto-healing developer environment.** Swarm IDE ditches cloud APIs entirely, running a customized micro-swarm of local agents over Ollama. When your code crashes, the swarm reads the stack trace, diagnoses the root cause, writes a patch, and validates it inside a local sandbox—all without human intervention.
+**An absolutely air-gapped, auto-healing developer environment.** Swarm IDE ditches cloud APIs entirely, running a customized micro-swarm of local agents over Ollama. When your code crashes, the swarm reads the stack trace, diagnoses the root cause, writes a patch, and validates it inside a local sandbox - all without human intervention.
 
-## 🚀 Architecture Overhaul
-The Swarm IDE has been completely rebuilt with a highly performant, decoupled architecture:
-- **React 18 Frontend:** A "No-Build" Babel CDN architecture featuring a slick dark-mode UI with collapsible reasoning blocks, session persistence, and markdown streaming.
-- **Production WSGI Backend:** Flask's development server has been replaced with a hardened **Waitress** deployment bound safely to `127.0.0.1`.
-- **DoS Thread Locking:** Prevents Local LLM Memory Exhaustion (OOM) by strictly locking the autonomous agent loop to a single concurrent background task.
-- **Graceful Cancellation:** Stop a runaway agent loop instantly from the UI via AbortControllers without killing the Python process.
+## 🧠 System Architecture
+
+The Swarm IDE consists of highly specialized, decoupled layers that work in tandem to keep your code functioning without manual intervention:
+
+1. **The Orchestrator (Dynamic Routing):** The primary agent interface. You can dynamically switch models on the fly (e.g., Qwen2.5-Coder, DeepSeek-R1, Hermes-3) via the UI. It receives your prompt and determines whether to write files, search the web, execute bash scripts, or query the RAG database.
+2. **The Micro-Swarm (CRAG):** When the Orchestrator executes a script in the local sandbox and it crashes, the Micro-Swarm intervenes. It skips simple retries and instead parses the full stack trace. A specialized Coder agent applies the exact patch needed to fix the syntax or logic error. Parallel sub-agents seamlessly inherit your selected model to prevent VRAM deadlock.
+3. **The Memory Module:** When the Micro-Swarm successfully heals a bug, it embeds the (Crash Log + Root Cause + Patch) into a persistent local **ChromaDB** vector database. If the Swarm encounters this error again, it instantly retrieves the memory and solves it on the first attempt.
+4. **Hardened Backend Deployment:** The server utilizes a production-ready **Waitress** WSGI deployment safely bound to 127.0.0.1. It features strict DoS thread locking to prevent Local LLM Memory Exhaustion (OOM) by locking the autonomous agent loop to a single concurrent background task.
+
+## ⚡ Core Capabilities
 
 <table>
+<tr><td><b>71+ Design Skill Contracts</b></td><td>The Swarm is pre-loaded with over 71 specialized UI/UX design frameworks natively integrated into the workspace (including <i>Taste Skill</i>, <i>Impeccable</i>, <i>Shadcn</i>, <i>Bento</i>, and the full <i>Awesome Design</i> library). The AI automatically enforces these design constraints to prevent generic, templated UI generation.</td></tr>
 <tr><td><b>Agentic Web Research</b></td><td>Integrated <code>duckduckgo-search</code>. Without needing a paid API key, your offline models can autonomously crawl the live internet to read documentation and fetch framework updates before writing code.</td></tr>
 <tr><td><b>AST Auto-Linting</b></td><td>Intercepts files using Python's native <code>py_compile</code> before they hit the execution sandbox. Instantly feeds syntax errors back to the agent for real-time Self-Healing without wasting Docker iterations.</td></tr>
-<tr><td><b>Self-Healing CRAG Loop</b></td><td>A dedicated triage trio takes over when tests fail. DeepSeek-R1 drafts an RCA (Root Cause Analysis), Qwen2.5-Coder writes the patch, and the sandbox validates it. Retries recursively up to 3 times.</td></tr>
-<tr><td><b>Vectorized Memory</b></td><td>Successful bug fixes are committed permanently to a ChromaDB instance. The swarm instantly recalls these exact stack traces later, bypassing repetitive debugging.</td></tr>
+<tr><td><b>Content & Watermark Scrubbing</b></td><td>Natively includes deterministic tools (<code>remove-ai-marks</code> and <code>clean-user-facing-text</code>) to automatically strip C2PA/AI provenance marks, invisible Unicode, and humanize generated text.</td></tr>
 <tr><td><b>Heretic Mode</b></td><td>Drop the safety rails. A single toggle routes synthesis to an uncensored model (Hermes 3), completely disabling moralizing filters for unrestricted logic building.</td></tr>
 <tr><td><b>AI Governance Dashboard</b></td><td>Monitor execution boundaries, thrashing rates, and token burn in real-time. Includes a built-in SQLite dashboard to track total autonomous actions and Heretic Mode invocations.</td></tr>
 </table>
 
----
-
-## Architecture & How it Works
-
-The Swarm IDE consists of three isolated layers that work in tandem to keep your code functioning without manual intervention:
-
-1. **The Orchestrator:** Powered by `deepseek-r1:7b`. It receives your prompt and determines whether to write files, search the web, execute bash scripts, or query the RAG database.
-2. **The Micro-Swarm (CRAG):** When the Orchestrator executes a script in the local sandbox and it crashes, the Micro-Swarm intervenes. It skips simple retries and instead parses the full stack trace. A specialized Coder agent (`qwen2.5-coder:7b`) applies the exact patch needed to fix the syntax or logic error.
-3. **The Memory Module:** When the Micro-Swarm successfully heals a bug, it embeds the `(Crash Log + Root Cause + Patch)` into a persistent local **ChromaDB** vector database. If the Swarm encounters this error again, it instantly retrieves the memory and solves it on the first attempt.
-
-## Quick Start
+## 🚀 Quick Start
 
 You need Python 3.10+ and [Ollama](https://ollama.com) installed on your machine. 
 
 ### 1. Grab the Weights
 Run the included script to pull the specific local models the swarm relies on:
 
-```bash
+`ash
 # Windows
 pull_models.bat
 
 # Mac / Linux
 sh pull_models.sh
-```
+`
 
-### 2. Boot the Environment
-Install the lightweight dependencies and start the local server.
-
-```bash
+### 2. Install Dependencies
+`ash
 pip install flask chromadb requests waitress duckduckgo-search pandas
-python 6_builder_app.py
-```
+`
 
-> **Note:** The UI runs on port 5000. Access your terminal at `http://127.0.0.1:5000`. No telemetry is transmitted off your machine.
+### 3. Boot the Environment (One-Click)
+For Windows users, simply double-click the **Start-Swarm.bat** file (or the **Swarm IDE** desktop shortcut). 
+This will automatically start the Ollama daemon, boot the Python backend, and open your web browser to http://127.0.0.1:5000.
+
+Alternatively, start it manually:
+`ash
+ollama serve
+python 6_builder_app.py
+`
 
 ---
 
