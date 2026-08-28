@@ -46,6 +46,11 @@ Your internal reasoning about the current state and the next action. Keep this c
 </write_file>
 
 <!-- Use this to research coding topics, read documentation, or execute general internet queries. -->
+<search_rag>
+  <index_name>Name of the PDF index (provided in the system warning when PDF was attached)</index_name>
+  <query>Your search query</query>
+</search_rag>
+
 <search_web>
   <query>Search query</query>
 </search_web>
@@ -65,6 +70,11 @@ Your internal reasoning about the current state and the next action. Keep this c
 </self_heal>
 
 <!-- Use this IMMEDIATELY when the user's task is completed or the necessary information has been gathered. -->
+<!-- Use this IMMEDIATELY if you need to ask the user a clarifying question about their requirements. Do NOT use execute_bash to talk to the user. -->
+<ask_user>
+  <question>Your detailed question to the user.</question>
+</ask_user>
+
 <finish>
   <status>success | partial | blocked</status>
   <summary>Detailed final answer to the user's request.</summary>

@@ -395,6 +395,29 @@ def run_builder_loop(
                     observation = f"Skill Execution STDOUT:\n{_truncate_output(res['stdout'])}\nSTDERR:\n{_truncate_output(res['stderr'])}\nExit: {res['code']}"
 
             # 7. EXECUTE BASH
+# 7.5 SEARCH RAG (ColPali Visual PDF Retrieval)
+            elif action_type == "search_rag":
+                index_name = args.get("index_name", "")
+                query = args.get("query", "")
+                try:
+                    import sys
+                    # Try to fetch the global pdf_rag loaded in 6_builder_app.py
+                    pdf_rag = sys.modules['__main__'].pdf_rag if '__main__' in sys.modules and hasattr(sys.modules['__main__'], 'pdf_rag') else None
+                    if pdf_rag:
+                        # ColPali retrieval
+                        results = pdf_rag.search(query, index_name=index_name, k=3)
+                        # We return base64 images to the agent (or descriptions if not supported)
+                        # Since deepseek/qwen-coder text models can't see images, we would ideally use Qwen2-VL here,
+                        # but for now we will just return the metadata indicating it was found, 
+                        # or ideally the Byaldi wrapper can extract text from the visual regions if configured.
+                        obs = f"Visual RAG Search executed on index '{index_name}' for query '{query}'. Found {len(results)} relevant pages.\n"
+                        for i, r in enumerate(results):
+                            obs += f"\nPage {r.page_num} Score: {r.score}\n"
+                        observation = f"Visual RAG Search executed successfully.\n\n{obs}\n[Note: Full image grounding requires VLM integration. RAG index confirms context exists.]"
+                    else:
+                        observation = "Error: ColPali Visual RAG engine (pdf_rag) is not initialized or your GPU lacked VRAM during boot."
+                except Exception as e:
+                    observation = f"ColPali RAG search failed: {e}"
             elif action_type == "search_web":
                 query = args.get("query", "")
                 try:
@@ -490,6 +513,11 @@ def run_builder_loop(
 
 
             # 10. FINISH
+            elif action_type == "ask_user":
+                question = args.get("question", "")
+                final_summary = question
+                is_finished = True
+                observation = f"Asking user: {question}"
             elif action_type == "finish":
                 status = args.get("status", "success")
                 summary = args.get("summary", "")
