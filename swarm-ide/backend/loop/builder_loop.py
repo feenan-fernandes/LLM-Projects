@@ -116,6 +116,11 @@ def run_builder_loop(
         mock = mock_responses[i] if mock_responses and i < len(mock_responses) else None
         response_text, metrics = call_orchestrator(conversation, model=model, mock_response=mock, system_prompt=system_prompt)
         
+        if not response_text.strip() and not mock:
+            summary = "Error: Local LLM returned an empty response. Ensure Ollama is running and the model is downloaded."
+            _emit({"type": "action", "iteration": iteration, "action": "abort", "result": summary})
+            return False, iteration, summary, total_tokens, max_tps
+
         c_tokens = metrics.get('completion_tokens', 0)
         e_dur = metrics.get('eval_duration', 1) / 1e9
         total_tokens += c_tokens
@@ -424,7 +429,7 @@ def run_builder_loop(
                     _emit({"type": "system", "msg": f"Sub-Agent {idx+1} spawned: {t[:30]}..."})
                     prompt = f"You are a fast Swarm Sub-Agent. Your isolated task is: {t}\nReturn a thorough but concise answer."
                     try:
-                        res, _ = call_orchestrator(prompt, model="deepseek-r1:7b")
+                        res, _ = call_orchestrator(prompt, model=model)
                         return f"--- Sub-Agent {idx+1} Result ---\n{res}\n"
                     except Exception as e:
                         return f"--- Sub-Agent {idx+1} Failed ---\n{e}\n"

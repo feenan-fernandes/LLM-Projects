@@ -6,5 +6,573 @@
     "stars": 312,
     "score": 42.5,
     "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\agents\\..\\skills\\stripe--stripe-webhook-skill\\SKILL.md"
+  },
+  "agentic": {
+    "name": "agentic",
+    "full_name": "local/agentic",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\agentic\\SKILL.md"
+  },
+  "ant": {
+    "name": "ant",
+    "full_name": "local/ant",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\ant\\SKILL.md"
+  },
+  "artistic": {
+    "name": "artistic",
+    "full_name": "local/artistic",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\artistic\\SKILL.md"
+  },
+  "basic": {
+    "name": "basic",
+    "full_name": "local/basic",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\basic\\SKILL.md"
+  },
+  "bento": {
+    "name": "bento",
+    "full_name": "local/bento",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\bento\\SKILL.md"
+  },
+  "bold": {
+    "name": "bold",
+    "full_name": "local/bold",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\bold\\SKILL.md"
+  },
+  "brutalism": {
+    "name": "brutalism",
+    "full_name": "local/brutalism",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\brutalism\\SKILL.md"
+  },
+  "cafe": {
+    "name": "cafe",
+    "full_name": "local/cafe",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\cafe\\SKILL.md"
+  },
+  "claude": {
+    "name": "claude",
+    "full_name": "local/claude",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\claude\\SKILL.md"
+  },
+  "claymorphism": {
+    "name": "claymorphism",
+    "full_name": "local/claymorphism",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\claymorphism\\SKILL.md"
+  },
+  "clean": {
+    "name": "clean",
+    "full_name": "local/clean",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\clean\\SKILL.md"
+  },
+  "clean-user-facing-text": {
+    "name": "clean-user-facing-text",
+    "full_name": "local/clean-user-facing-text",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\clean-user-facing-text\\SKILL.md"
+  },
+  "codex": {
+    "name": "codex",
+    "full_name": "local/codex",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\codex\\SKILL.md"
+  },
+  "colorful": {
+    "name": "colorful",
+    "full_name": "local/colorful",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\colorful\\SKILL.md"
+  },
+  "contemporary": {
+    "name": "contemporary",
+    "full_name": "local/contemporary",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\contemporary\\SKILL.md"
+  },
+  "corporate": {
+    "name": "corporate",
+    "full_name": "local/corporate",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\corporate\\SKILL.md"
+  },
+  "cosmic": {
+    "name": "cosmic",
+    "full_name": "local/cosmic",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\cosmic\\SKILL.md"
+  },
+  "creative": {
+    "name": "creative",
+    "full_name": "local/creative",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\creative\\SKILL.md"
+  },
+  "dithered": {
+    "name": "dithered",
+    "full_name": "local/dithered",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\dithered\\SKILL.md"
+  },
+  "doodle": {
+    "name": "doodle",
+    "full_name": "local/doodle",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\doodle\\SKILL.md"
+  },
+  "dramatic": {
+    "name": "dramatic",
+    "full_name": "local/dramatic",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\dramatic\\SKILL.md"
+  },
+  "editorial": {
+    "name": "editorial",
+    "full_name": "local/editorial",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\editorial\\SKILL.md"
+  },
+  "enterprise": {
+    "name": "enterprise",
+    "full_name": "local/enterprise",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\enterprise\\SKILL.md"
+  },
+  "expressive": {
+    "name": "expressive",
+    "full_name": "local/expressive",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\expressive\\SKILL.md"
+  },
+  "fantasy": {
+    "name": "fantasy",
+    "full_name": "local/fantasy",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\fantasy\\SKILL.md"
+  },
+  "fiction": {
+    "name": "fiction",
+    "full_name": "local/fiction",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\fiction\\SKILL.md"
+  },
+  "flat": {
+    "name": "flat",
+    "full_name": "local/flat",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\flat\\SKILL.md"
+  },
+  "friendly": {
+    "name": "friendly",
+    "full_name": "local/friendly",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\friendly\\SKILL.md"
+  },
+  "futuristic": {
+    "name": "futuristic",
+    "full_name": "local/futuristic",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\futuristic\\SKILL.md"
+  },
+  "geometric": {
+    "name": "geometric",
+    "full_name": "local/geometric",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\geometric\\SKILL.md"
+  },
+  "glassmorphism": {
+    "name": "glassmorphism",
+    "full_name": "local/glassmorphism",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\glassmorphism\\SKILL.md"
+  },
+  "gradient": {
+    "name": "gradient",
+    "full_name": "local/gradient",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\gradient\\SKILL.md"
+  },
+  "img2threejs": {
+    "name": "img2threejs",
+    "full_name": "local/img2threejs",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\img2threejs\\SKILL.md"
+  },
+  "immersive": {
+    "name": "immersive",
+    "full_name": "local/immersive",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\immersive\\SKILL.md"
+  },
+  "impeccable": {
+    "name": "impeccable",
+    "full_name": "local/impeccable",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\impeccable\\SKILL.md"
+  },
+  "levels": {
+    "name": "levels",
+    "full_name": "local/levels",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\levels\\SKILL.md"
+  },
+  "lingo": {
+    "name": "lingo",
+    "full_name": "local/lingo",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\lingo\\SKILL.md"
+  },
+  "material": {
+    "name": "material",
+    "full_name": "local/material",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\material\\SKILL.md"
+  },
+  "matrix": {
+    "name": "matrix",
+    "full_name": "local/matrix",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\matrix\\SKILL.md"
+  },
+  "minimal": {
+    "name": "minimal",
+    "full_name": "local/minimal",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\minimal\\SKILL.md"
+  },
+  "modern": {
+    "name": "modern",
+    "full_name": "local/modern",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\modern\\SKILL.md"
+  },
+  "mono": {
+    "name": "mono",
+    "full_name": "local/mono",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\mono\\SKILL.md"
+  },
+  "neobrutalism": {
+    "name": "neobrutalism",
+    "full_name": "local/neobrutalism",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\neobrutalism\\SKILL.md"
+  },
+  "neon": {
+    "name": "neon",
+    "full_name": "local/neon",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\neon\\SKILL.md"
+  },
+  "neumorphism": {
+    "name": "neumorphism",
+    "full_name": "local/neumorphism",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\neumorphism\\SKILL.md"
+  },
+  "pacman": {
+    "name": "pacman",
+    "full_name": "local/pacman",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\pacman\\SKILL.md"
+  },
+  "paper": {
+    "name": "paper",
+    "full_name": "local/paper",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\paper\\SKILL.md"
+  },
+  "perspective": {
+    "name": "perspective",
+    "full_name": "local/perspective",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\perspective\\SKILL.md"
+  },
+  "power": {
+    "name": "power",
+    "full_name": "local/power",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\power\\SKILL.md"
+  },
+  "premium": {
+    "name": "premium",
+    "full_name": "local/premium",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\premium\\SKILL.md"
+  },
+  "professional": {
+    "name": "professional",
+    "full_name": "local/professional",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\professional\\SKILL.md"
+  },
+  "pulse": {
+    "name": "pulse",
+    "full_name": "local/pulse",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\pulse\\SKILL.md"
+  },
+  "refined": {
+    "name": "refined",
+    "full_name": "local/refined",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\refined\\SKILL.md"
+  },
+  "remove-ai-marks": {
+    "name": "remove-ai-marks",
+    "full_name": "local/remove-ai-marks",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\remove-ai-marks\\SKILL.md"
+  },
+  "retro": {
+    "name": "retro",
+    "full_name": "local/retro",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\retro\\SKILL.md"
+  },
+  "riso": {
+    "name": "riso",
+    "full_name": "local/riso",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\riso\\SKILL.md"
+  },
+  "roku": {
+    "name": "roku",
+    "full_name": "local/roku",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\roku\\SKILL.md"
+  },
+  "sega": {
+    "name": "sega",
+    "full_name": "local/sega",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\sega\\SKILL.md"
+  },
+  "shadcn": {
+    "name": "shadcn",
+    "full_name": "local/shadcn",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\shadcn\\SKILL.md"
+  },
+  "sketch": {
+    "name": "sketch",
+    "full_name": "local/sketch",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\sketch\\SKILL.md"
+  },
+  "skeumorphism": {
+    "name": "skeumorphism",
+    "full_name": "local/skeumorphism",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\skeumorphism\\SKILL.md"
+  },
+  "sleek": {
+    "name": "sleek",
+    "full_name": "local/sleek",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\sleek\\SKILL.md"
+  },
+  "spacious": {
+    "name": "spacious",
+    "full_name": "local/spacious",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\spacious\\SKILL.md"
+  },
+  "square": {
+    "name": "square",
+    "full_name": "local/square",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\square\\SKILL.md"
+  },
+  "stitch": {
+    "name": "stitch",
+    "full_name": "local/stitch",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\stitch\\SKILL.md"
+  },
+  "storytelling": {
+    "name": "storytelling",
+    "full_name": "local/storytelling",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\storytelling\\SKILL.md"
+  },
+  "taste-skill": {
+    "name": "taste-skill",
+    "full_name": "local/taste-skill",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\taste-skill\\SKILL.md"
+  },
+  "terracotta": {
+    "name": "terracotta",
+    "full_name": "local/terracotta",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\terracotta\\SKILL.md"
+  },
+  "tetris": {
+    "name": "tetris",
+    "full_name": "local/tetris",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\tetris\\SKILL.md"
+  },
+  "vibrant": {
+    "name": "vibrant",
+    "full_name": "local/vibrant",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\vibrant\\SKILL.md"
+  },
+  "vintage": {
+    "name": "vintage",
+    "full_name": "local/vintage",
+    "url": "local",
+    "stars": 0,
+    "score": 0,
+    "installed_path": "C:\\Users\\feena\\OneDrive\\Documents\\Agentic\\stackoverflow\\swarm-ide\\backend\\skills\\vintage\\SKILL.md"
   }
 }

@@ -40,7 +40,7 @@ Your internal reasoning about the current state and the next action. Keep this c
   <reason>justification</reason>
 </select_skill>
 
-<write_file>
+<write_file>\n  <!-- IMPORTANT: When writing to .txt files, use plain text ONLY. DO NOT use markdown formatting like ** or ## -->
   <path>relative path</path>
   <content>full file content</content>
 </write_file>
@@ -75,3 +75,4 @@ Your internal reasoning about the current state and the next action. Keep this c
 2. Every action MUST be preceded by a <think> block.
 3. NEVER emit raw text outside of valid XML tags.
 4. Output EXACTLY ONE action tag per response (except <spawn_worker> which can be output multiple times).
+
